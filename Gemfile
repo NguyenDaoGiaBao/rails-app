@@ -59,7 +59,7 @@ group :development, :test do
   gem 'simplecov', '~> 0.22.0'
 
   # rspec-rails integrates the Rails testing helpers into RSpec.
-  gem 'rspec-rails', '~> 8.0', '>= 8.0.1'
+  gem 'rspec-rails', '~> 8.0'
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
