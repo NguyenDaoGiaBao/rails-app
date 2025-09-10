@@ -1,0 +1,27 @@
+<%# Link to the "First" page
+  - available local variables
+    url:           url to the first page
+    current_page:  a page object for the currently displayed page
+    total_pages:   total number of pages
+    per_page:      number of items to fetch per page
+    remote:        data-remote
+-%>
+<span class="first">
+  <%= link_to_unless current_page.first?, t('views.pagination.first').html_safe, url, remote: remote %>
+</span>
+
+
+<li class="prev">
+  <a href="javascript:void(0);" class="disabled">Prev</a>
+  <a href="<%= url %>" rel="next" <%= "data-remote='true'" if remote %>>Next</a>
+</li>
+
+<% if current_page.first? %>
+  <li class="prev">
+    <a href="javascript:void(0);" class="disabled">Prev</a>
+  </li>
+<% else %>
+  <li class="prev">
+    <a href="<%= url %>" rel="prev" <%= "data-remote='true'" if remote %>>First</a>
+  </li>
+<% end %>

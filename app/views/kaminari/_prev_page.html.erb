@@ -1,0 +1,9 @@
+<% if current_page.first? %>
+  <li class="prev">
+    <a href="javascript:void(0);" class="disabled">Prev</a>
+  </li>
+<% else %>
+  <li class="prev">
+    <a href="<%= url %>" rel="prev" <%= "data-remote='true'" if remote %>>Prev</a>
+  </li>
+<% end %>

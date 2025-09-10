@@ -1,0 +1,78 @@
+<div class="todo-item all-list <%= task.is_done ? "todo-task-done" : "" %> <%= task.important ? "todo-task-important" : "" %>" id="row-task-<%= task.id %>">
+  <div class="todo-item-inner">
+    <div class="n-chk text-center">
+      <div class="form-check form-check-primary form-check-inline mt-1 me-0" data-bs-toggle="collapse" data-bs-target>
+        <input class="form-check-input inbox-chkbox is-done" type="checkbox" <%= task.is_done ? "checked" : "" %> data-id="<%= task.id %>">
+      </div>
+    </div>
+
+    <div class="todo-content">
+      <h5 class="todo-heading" data-todoHeading="Meeting with Shaun Park at 4:50pm"><%= task.title %></h5>
+      <p class="todo-text" data-todoHtml="<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.</p>" data-todoText='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>Lorem
+        ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis
+        id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis
+        eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+        Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut,
+        posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu
+        sodales aliquam.</p>
+    </div>
+
+    <div class="priority-dropdown custom-dropdown-icon">
+      <div class="dropdown p-dropdown">
+        <% priority_class = { 1 => "primary", 2 => "warning", 3 => "danger" } %>
+        <a class="dropdown-toggle <%= priority_class[task.priority_before_type_cast] || 'default' %>" href="#" role="button" id="dropdownMenuLink-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-octagon">
+            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12" y2="16"></line>
+          </svg>
+        </a>
+
+        <div class="dropdown-menu left" aria-labelledby="dropdownMenuLink-1">
+          <a class="dropdown-item danger" href="javascript:void(0);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-octagon">
+              <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12" y2="16"></line>
+            </svg>
+            High</a>
+          <a class="dropdown-item warning" href="javascript:void(0);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-octagon">
+              <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12" y2="16"></line>
+            </svg>
+            Middle</a>
+          <a class="dropdown-item primary" href="javascript:void(0);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-octagon">
+              <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12" y2="16"></line>
+            </svg>
+            Low</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-dropdown custom-dropdown-icon">
+      <div class="dropdown">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="12" cy="5" r="1"></circle>
+            <circle cx="12" cy="19" r="1"></circle>
+          </svg>
+        </a>
+
+        <div class="dropdown-menu left" aria-labelledby="dropdownMenuLink-2">
+          <a class="edit dropdown-item" href="<%= task_path(id: task.id) %>">Edit</a>
+          <a class="important dropdown-item" href="javascript:void(0);">Important</a>
+          <a class="dropdown-item task-delete" data-id="<%= task.id %>">Delete</a>
+          <a class="dropdown-item permanent-delete" href="javascript:void(0);">Permanent Delete</a>
+          <a class="dropdown-item revive" href="javascript:void(0);">Revive Task</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

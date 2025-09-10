@@ -1,0 +1,225 @@
+<%= form_with(model: @movie, local: true, multipart: true, class: "needs-validation", novalidate: true) do |form| %>
+  <% if @movie.errors.any? %>
+    <div class="alert alert-danger" role="alert">
+      <h5 class="alert-heading">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        Có <%= pluralize(@movie.errors.count, "lỗi") %> cần khắc phục:
+      </h5>
+      <ul class="mb-0">
+        <% @movie.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Thông tin cơ bản</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <%= form.label :title, "Tên phim", class: "form-label required" %>
+            <%= form.text_field :title, class: "form-control #{'is-invalid' if @movie.errors[:title].any?}", required: true %>
+            <div class="invalid-feedback">
+              <%= @movie.errors[:title].first if @movie.errors[:title].any? %>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :description, "Mô tả phim", class: "form-label" %>
+            <%= form.text_area :description, rows: 6, class: "form-control #{'is-invalid' if @movie.errors[:description].any?}" %>
+            <div class="form-text">Mô tả chi tiết về nội dung phim</div>
+            <div class="invalid-feedback">
+              <%= @movie.errors[:description].first if @movie.errors[:description].any? %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= form.label :genre, "Thể loại", class: "form-label required" %>
+                <%= form.select :genre,
+                                options_for_select([
+                                                     ["Hành động", "action"],
+                                                     ["Hài kịch", "comedy"],
+                                                     ["Chính kịch", "drama"],
+                                                     ["Kinh dị", "horror"],
+                                                     ["Lãng mạn", "romance"],
+                                                     ["Khoa học viễn tưởng", "sci_fi"],
+                                                     ["Phiêu lưu", "adventure"],
+                                                     ["Tài liệu", "documentary"],
+                                                     ["Gia đình", "family"],
+                                                     ["Hoạt hình", "animation"]
+                                                   ], @movie.genre),
+                                { prompt: "Chọn thể loại" },
+                                { class: "form-select #{'is-invalid' if @movie.errors[:genre].any?}", required: true } %>
+                <div class="invalid-feedback">
+                  <%= @movie.errors[:genre].first if @movie.errors[:genre].any? %>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= form.label :duration, "Thời lượng (phút)", class: "form-label required" %>
+                <%= form.number_field :duration, class: "form-control #{'is-invalid' if @movie.errors[:duration].any?}", min: 1, required: true %>
+                <div class="invalid-feedback">
+                  <%= @movie.errors[:duration].first if @movie.errors[:duration].any? %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= form.label :age_rating, "Độ tuổi", class: "form-label required" %>
+                <%= form.select :age_rating,
+                                options_for_select([
+                                                     ["P - Phù hợp mọi lứa tuổi", "P"],
+                                                     ["K - Dành cho trẻ em dưới 13 tuổi", "K"],
+                                                     ["T13 - Từ 13 tuổi trở lên", "T13"],
+                                                     ["T16 - Từ 16 tuổi trở lên", "T16"],
+                                                     ["T18 - Từ 18 tuổi trở lên", "T18"],
+                                                     ["C - Cấm chiếu", "C"]
+                                                   ], @movie.age_rating),
+                                { prompt: "Chọn độ tuổi" },
+                                { class: "form-select #{'is-invalid' if @movie.errors[:age_rating].any?}", required: true } %>
+                <div class="invalid-feedback">
+                  <%= @movie.errors[:age_rating].first if @movie.errors[:age_rating].any? %>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= form.label :status, "Trạng thái", class: "form-label required" %>
+                <%= form.select :status,
+                                options_for_select([
+                                                     ["Đang chiếu", "active"],
+                                                     ["Sắp chiếu", "coming_soon"],
+                                                     ["Không hoạt động", "inactive"]
+                                                   ], @movie.status),
+                                { prompt: "Chọn trạng thái" },
+                                { class: "form-select #{'is-invalid' if @movie.errors[:status].any?}", required: true } %>
+                <div class="invalid-feedback">
+                  <%= @movie.errors[:status].first if @movie.errors[:status].any? %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Poster phim</h5>
+        </div>
+        <div class="card-body">
+          <!-- Current Poster Preview -->
+          <div class="mb-3">
+            <div id="poster-preview" class="text-center">
+              <% if @movie.poster_url.present? || (@movie.poster_image.present? && @movie.persisted?) %>
+                <img src="<%= @movie.poster_url || url_for(@movie.poster_image) %>"
+                     alt="Current poster"
+                     class="img-fluid rounded mb-3"
+                     style="max-height: 300px;"
+                     id="current-poster">
+              <% else %>
+                <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3"
+                     style="height: 300px;"
+                     id="placeholder-poster">
+                  <div class="text-center">
+                    <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                    <p class="text-muted">Chưa có poster</p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Upload Image File -->
+          <div class="mb-3">
+            <%= form.label :poster_image, "Tải lên file ảnh", class: "form-label" %>
+            <%= form.file_field :poster_image,
+                                accept: "image/*",
+                                class: "form-control #{'is-invalid' if @movie.errors[:poster_image].any?}",
+                                id: "poster-file-input" %>
+            <div class="form-text">Chọn file ảnh từ máy tính (JPG, PNG, GIF)</div>
+            <div class="invalid-feedback">
+              <%= @movie.errors[:poster_image].first if @movie.errors[:poster_image].any? %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="card">
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <%= form.submit @movie.new_record? ? "Tạo phim" : "Cập nhật phim",
+                            class: "btn btn-primary btn-lg" %>
+            <%= link_to "Hủy bỏ",
+                        @movie.persisted? ? movie_path(@movie) : movies_path,
+                        class: "btn btn-secondary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('poster-file-input');
+        const urlInput = document.getElementById('poster-url-input');
+        const posterPreview = document.getElementById('poster-preview');
+
+        // Handle file upload preview
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    updatePosterPreview(e.target.result);
+                    urlInput.value = ''; // Clear URL input
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle URL input preview
+        urlInput.addEventListener('input', function(e) {
+            const url = e.target.value;
+            if (url) {
+                updatePosterPreview(url);
+                fileInput.value = ''; // Clear file input
+            }
+        });
+
+        function updatePosterPreview(src) {
+            posterPreview.innerHTML = `
+      <img src="${src}"
+           alt="Poster preview"
+           class="img-fluid rounded mb-3"
+           style="max-height: 300px;"
+           onerror="this.style.display='none'; showPlaceholder();">
+    `;
+        }
+
+        window.showPlaceholder = function() {
+            posterPreview.innerHTML = `
+      <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3"
+           style="height: 300px;">
+        <div class="text-center">
+          <i class="fas fa-image fa-3x text-muted mb-2"></i>
+          <p class="text-muted">Không thể tải ảnh</p>
+        </div>
+      </div>
+    `;
+        };
+    });
+</script>

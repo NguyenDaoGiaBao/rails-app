@@ -1,0 +1,142 @@
+<% content_for :styles do %>
+	<%= stylesheet_link_tag "filepond.min" %>
+	<%= stylesheet_link_tag "FilePondPluginImagePreview.min" %>
+<% end %>
+	<div class="col-lg-4 col-md-4 layout-spacing">
+	<%= form_with model: @player, local: true do |form| %>
+		<div class="statbox widget box box-shadow">
+			<div class="widget-content widget-content-area">
+				<div class="profile-image">
+					<div class="img-uploader-content">
+						<%#= form.label :avatar %>
+						<%#= form.file_field :avatar, class: "filepond", accept: "image/*", id: "avatar" %>
+						<%= form.label :avatar, style: "display: block" %>
+						<%= form.file_field :avatar, accept: "image/*", class: 'form-control-file' %>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="col-lg-8 col-md-8 layout-spacing">
+			<div class="statbox widget box box-shadow">
+				<div class="widget-content widget-content-area">
+					<div class="row form-group mb-4">
+						<div class="col">
+							<%= form.label :first_name, "First name <span class='text-danger'>*</span>".html_safe %>
+							<%= form.text_field :first_name, class: "form-control #{'is-invalid' if @player.errors[:first_name].any?}", placeholder: "First name" %>
+							<% if @player.errors[:first_name].any? %>
+                <span class="text-danger">
+	                <%= @player.errors[:first_name].first %>
+                </span>
+							<% end %>
+						</div>
+						<div class="col">
+							<%= form.label :last_name, "Last name<span class='text-danger'>*</span>".html_safe %>
+							<%= form.text_field :last_name, class: "form-control #{'is-invalid' if @player.errors[:last_name].any?}", placeholder: "Last name" %>
+							<% if @player.errors[:last_name].any? %>
+                <span class="text-danger">
+	                <%= @player.errors[:last_name].first %>
+                </span>
+							<% end %>
+						</div>
+					</div>
+					<div class="row form-group mb-4">
+						<div class="col">
+							<%= form.label :email, "Email<span class='text-danger'>*</span>".html_safe %>
+							<%= form.text_field :email, class: "form-control #{'is-invalid' if @player.errors[:email].any?}", placeholder: "Email" %>
+							<% if @player.errors[:email].any? %>
+                <span class="text-danger">
+	                <%= @player.errors[:email].first %>
+                </span>
+							<% end %>
+						</div>
+						<div class="col">
+							<%= form.label :date_of_birth, "Date of Birth<span class='text-danger'>*</span>".html_safe %>
+							<%= form.date_field :birth_date, class: "form-control #{'is-invalid' if @player.errors[:birth_date].any?}" %>
+							<% if @player.errors[:birth_date].any? %>
+                <span class="text-danger">
+	                <%= @player.errors[:birth_date].first %>
+                </span>
+							<% end %>
+						</div>
+					</div>
+					<div class="form-group mb-4">
+						<%= form.label :description %>
+						<%= form.text_area :description, class: "form-control #{'is-invalid' if @player.errors[:description].any?}", rows: 3, placeholder: "Description" %>
+						<% if @player.errors[:description].any? %>
+                <span class="text-danger">
+	                <%= @player.errors[:description].first %>
+                </span>
+						<% end %>
+					</div>
+					<%= form.submit "Save", class: "btn btn-primary" %>
+				
+				</div>
+			</div>
+		</div>
+	<% end %>
+	<% content_for :scripts do %>
+			<%= javascript_include_tag "filepond.min" %>
+			<%= javascript_include_tag "FilePondPluginFileValidateType.min" %>
+			<%= javascript_include_tag "FilePondPluginImageExifOrientation.min" %>
+			<%= javascript_include_tag "FilePondPluginImagePreview.min" %>
+			<%= javascript_include_tag "FilePondPluginImageCrop.min" %>
+			<%= javascript_include_tag "FilePondPluginImageResize.min" %>
+			<%= javascript_include_tag "FilePondPluginImageTransform.min" %>
+			<%= javascript_include_tag "filepondPluginFileValidateSize.min" %>
+			<%= javascript_include_tag "custom-filepond" %>
+		<script>
+            /**
+             * ==================
+             * Single File Upload
+             * ==================
+             */
+
+            // We register the plugins required to do
+            // image previews, cropping, resizing, etc.
+            FilePond.registerPlugin(
+                FilePondPluginFileValidateType,
+                FilePondPluginImageExifOrientation,
+                FilePondPluginImagePreview,
+                FilePondPluginImageCrop,
+                FilePondPluginImageResize,
+                FilePondPluginImageTransform,
+//   FilePondPluginImageEdit
+            );
+
+            // Select the file input and use
+            // create() to turn it into a pond
+            FilePond.create(
+                document.querySelector('#avatar'),
+                {
+                    server: {
+                        process: '/players',
+                        revert: '/revert',
+                        restore: null,
+                        load: null,
+                        fetch: null,
+                    },
+                    imagePreviewHeight: 170,
+                    imageCropAspectRatio: '1:1',
+                    imageResizeTargetWidth: 200,
+                    imageResizeTargetHeight: 200,
+                    stylePanelLayout: 'compact circle',
+                    styleLoadIndicatorPosition: 'center bottom',
+                    styleProgressIndicatorPosition: 'right bottom',
+                    styleButtonRemoveItemPosition: 'left bottom',
+                    styleButtonProcessItemPosition: 'right bottom',
+                    files: [
+                        {
+                            // the server file reference
+                            source: '',
+
+                            // set type to limbo to tell FilePond this is a temp file
+                            options: {
+                                type: 'image/png',
+                            },
+                        },
+                    ],
+                }
+            );
+		</script>
+	<% end %>

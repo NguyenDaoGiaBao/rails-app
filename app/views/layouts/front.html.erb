@@ -1,0 +1,70 @@
+<!-- app/views/layouts/front.html.erb -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+  <%= csrf_meta_tags %>
+  <title><%= content_for(:title) || "GB" %></title>
+  <link rel="icon" type="image/x-icon" href="/rf.png"/>
+  <%= stylesheet_link_tag "loader", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "loader" %>
+
+  <!-- BEGIN GLOBAL MANDATORY STYLES -->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <%= stylesheet_link_tag "bootstrap.min", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "plugins", "data-turbo-track": "reload" %>
+  <!-- END GLOBAL MANDATORY STYLES -->
+  <!--  BEGIN CUSTOM STYLE FILE  -->
+  <%= yield :styles %>
+  <!--  END CUSTOM STYLE FILE  -->
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <%= link_to "CGV", root_path, class: "navbar-brand fw-bold text-uppercase" %>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <%= link_to "Trang chủ", front_booking_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Đặt vé", front_booking_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= button_to "Đăng xuất", player_logout_path, method: :delete, class: "nav-link text-danger", form: { class: "d-inline" } %>
+          <%#= link_to "Đăng xuất", player_logout_path, method: :delete, data: { turbo: false }, class: "nav-link text-danger" %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="container mt-5">
+  <%= yield %>
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4 mt-5">
+  <div class="container">
+    <p class="mb-0">&copy; <%= Time.now.year %> CGV Việt Nam. Đặt vé xem phim trực tuyến.</p>
+  </div>
+</footer>
+
+<%= javascript_include_tag "jquery.min" %>
+<%= javascript_include_tag "vendors.min", "data-turbo-track": "reload"  %>
+<%= javascript_include_tag "bootstrap.bundle.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "perfect-scrollbar.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "mousetrap.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "waves.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "app", "data-turbo-track": "reload" %>
+<!-- END GLOBAL MANDATORY SCRIPTS -->
+<%= yield :scripts %>
+</body>
+</html>

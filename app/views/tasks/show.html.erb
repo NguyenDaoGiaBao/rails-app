@@ -1,0 +1,19 @@
+<% content_for :styles do %>>
+  <%= stylesheet_link_tag "flatpickr" %>
+  <%= stylesheet_link_tag "switches" %>
+<% end %>
+
+<div class="row">
+  <div id="flHorizontalFormlabel" class="col-lg-6 layout-spacing mx-auto">
+    <div class="statbox widget box box-shadow">
+      <div class="widget-header">
+        <div class="row">
+          <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+            <h4>Edit Task</h4>
+          </div>
+        </div>
+      </div>
+      <%= render "form", task: @task %>
+    </div>
+  </div>
+</div>

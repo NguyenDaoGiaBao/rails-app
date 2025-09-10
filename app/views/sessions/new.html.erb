@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+  <%= csrf_meta_tags %>
+  <title><%= content_for(:title) || "GB" %></title>
+  <link rel="icon" type="image/x-icon" href="/rf.png"/>
+  <%= stylesheet_link_tag "loader", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "loader" %>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <%= stylesheet_link_tag "bootstrap.min", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "plugins", "data-turbo-track": "reload" %>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>ĐĂNG NHẬP</h1>
+      <p>Chào mừng bạn trở lại</p>
+    </div>
+
+    <%= form_with url: player_login_path, method: :post, local: true, class: "login-form" do %>
+      <div class="form-group">
+        <%= label_tag :email, raw("Email <span class='required'>*</span>"), class: "form-label" %>
+        <%= email_field_tag :email, params[:email], class: "form-control", placeholder: "Nhập địa chỉ email", required: true %>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag :password, raw("Mật khẩu <span class='required'>*</span>"), class: "form-label" %>
+        <%= password_field_tag :password, nil, class: "form-control", placeholder: "Nhập mật khẩu", required: true %>
+      </div>
+
+      <%= submit_tag "Đăng nhập", class: "login-btn" %>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <div class="alert-modern" role="alert">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <div class="forgot-password">
+      <a href="#">Quên mật khẩu?</a>
+    </div>
+  </div>
+</body>

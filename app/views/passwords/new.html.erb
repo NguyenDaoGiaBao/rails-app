@@ -1,0 +1,31 @@
+<% if flash[:notice] %>
+	<div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+			<svg> ...</svg>
+		</button>
+		<strong>Warning!</strong> <%= flash[:notice] %>
+	</div>
+<% end %>
+<div class="card mt-3 mb-3">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<h2>Forgot your password?</h2>
+				<p>Enter your email to recover your ID</p>
+			</div>
+			<%= form_with url: passwords_path do |form| %>
+				<div class="col-md-12">
+					<div class="mb-3">
+						<%= form.label :email_address %>
+						<%= form.email_field :email_address, class: "form-control", required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %>
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="mb-4">
+						<%= form.submit "RECOVER", class: "btn btn-secondary w-100" %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

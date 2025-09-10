@@ -1,0 +1,30 @@
+<% content_for :styles do %>
+	<%= stylesheet_link_tag "apexcharts" %>
+	<%= stylesheet_link_tag "dash_1" %>
+<% end %>
+<% if policy(Current.user).show_side_user? %>
+<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+<!--	<div class="widget widget-card-five">-->
+<!--		<div class="widget-content">-->
+<!--			<div class="account-box">-->
+<!--				<div class="info-box">-->
+<!--					<div class="icon">-->
+<!--							<span>-->
+								<%#= image_tag "money-bag.png", alt: "money-bag" %>
+<!--							</span>-->
+<!--					</div>-->
+					
+<!--					<div class="balance-info">-->
+<!--						<h6>Total Users</h6>-->
+<!--						<p><%#= @total_users %></p>-->
+<!--					</div>-->
+<!--				</div>-->
+				
+<!--				<div class="card-bottom-section">-->
+<!--					<a href="<%#= users_path %>" class="">View Detail</a>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+</div>
+	<% end %>

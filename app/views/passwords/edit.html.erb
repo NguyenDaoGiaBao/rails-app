@@ -1,0 +1,36 @@
+<% if flash[:alert] %>
+	<div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+			<svg> ...</svg>
+		</button>
+		<strong>Warning!</strong> <%= flash[:alert] %>
+	</div>
+<% end %>
+<div class="card mt-3 mb-3">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<h2>Update your password</h2>
+			</div>
+			<%= form_with url: password_path(params[:token]), method: :put do |form| %>
+				<div class="col-md-12">
+					<div class="mb-3">
+						<%= form.label :password %>
+						<%= form.password_field :password, class: "form-control", required: true, autocomplete: "new-password", placeholder: "Enter new password",  maxlength: 72 %>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="mb-3">
+						<%= form.label :password_confirmation %>
+						<%= form.password_field :password_confirmation, class: "form-control", required: true, autocomplete: "new-password", placeholder: "Repeat new password",  maxlength: 72 %>
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="mb-4">
+						<%= form.submit "SAVE", class: "btn btn-secondary w-100" %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,36 @@
+<% local_assigns.fetch(:products, []).each do |user| %>
+  <tr id="row-user-<%= user.id %>">
+    <td>
+      <div class="media">
+        <div class="media-body align-self-center">
+          <h6 class="mb-0"><%= user.name %></h6>
+          <span class="text-danger"><%= user.email_address %></span>
+        </div>
+      </div>
+    </td>
+    <td class="text-center">
+								<span class="text-<%= role_display(user.role_before_type_cast)[:css_class] %>">
+                  <%= role_display(user.role_before_type_cast)[:name] %>
+                </span>
+    </td>
+    <td class="text-center">
+								<span class="badge <%= user.active ? 'badge-light-success' : 'badge-light-dark' %>">
+                  <%= user.active ? "Active" : "Deactivate" %>
+                </span>
+    </td>
+    <td class="text-center">
+      <div class="action-btns">
+        <a href="/users/<%= user.id %>" class="action-btn btn-edit bs-tooltip me-2" data-toggle="tooltip" data-placement="top" title="Edit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        </a>
+        <% if policy(User).destroy? %>
+          <%= button_to "Xoá", user_path(user), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
+        <% end %>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+
+<% end %>

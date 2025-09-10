@@ -1,0 +1,64 @@
+<% if flash[:notice] %>
+	<div class="alert alert-primary alert-dismissible fade show mb-4" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
+		<strong>Info!</strong> <%= flash[:notice] %>
+	</div>
+<% end %>
+<% if flash[:alert] %>
+	<div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
+		<strong>Info!</strong> <%= flash[:alert] %>
+	</div>
+<% end %>
+
+<div class="card mt-3 mb-3">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<h2>Sign Up</h2>
+				<p>Enter your email and password to register</p>
+			</div>
+			<%= form_with model: @user, url: store_path, local: true do |form| %>
+				<div class="col-md-12">
+					<div class="mb-3">
+						<%= form.label :name %>
+						<%= form.text_field :name, class: "form-control", required: true, autofocus: true, autocomplete: "name", placeholder: "Enter your name" %>
+					</div>
+				</div>
+				<div class="mb-3">
+					<%= form.label :user_name %>
+					<%= form.text_field :user_name, class: "form-control mb-1", required: true, autofocus: true, autocomplete: "user_name", placeholder: "Enter your user name" %>
+					<% if @user.errors[:user_name].any? %>
+							<span class="text-danger">
+								<%= @user.errors[:user_name].first %>
+							</span>
+					<% end %>
+				</div>
+				</div>
+				<div class="col-md-12">
+					<div class="mb-3">
+						<%= form.label :email_address %>
+						<%= form.email_field :email_address, class: "form-control", required: true, autofocus: true, autocomplete: "email_address", placeholder: "Enter your email address" %>
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="mb-4">
+						<%= form.label :password, class: "form-label" %>
+						<%= form.password_field :password, class: "form-control", required: true, autocomplete: "new-password", placeholder: "Enter your password", maxlength: 72 %>
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="mb-4">
+						<%= form.submit "SIGN UP", class: "btn btn-secondary w-100" %>
+					</div>
+				</div>
+			<% end %>
+			<div class="col-12">
+				<div class="text-center">
+					<p class="mb-0">Already have an account ?
+					<%= link_to "Sign In", login_path, class: "text-warning" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
