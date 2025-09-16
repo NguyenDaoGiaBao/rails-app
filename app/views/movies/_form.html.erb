@@ -23,7 +23,7 @@
           <div class="mb-3">
             <%= form.label :title, "Tên phim", class: "form-label required" %>
             <%= form.text_field :title, class: "form-control #{'is-invalid' if @movie.errors[:title].any?}", required: true %>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback d-block">
               <%= @movie.errors[:title].first if @movie.errors[:title].any? %>
             </div>
           </div>
@@ -32,7 +32,7 @@
             <%= form.label :description, "Mô tả phim", class: "form-label" %>
             <%= form.text_area :description, rows: 6, class: "form-control #{'is-invalid' if @movie.errors[:description].any?}" %>
             <div class="form-text">Mô tả chi tiết về nội dung phim</div>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback d-block">
               <%= @movie.errors[:description].first if @movie.errors[:description].any? %>
             </div>
           </div>
@@ -56,7 +56,7 @@
                                                    ], @movie.genre),
                                 { prompt: "Chọn thể loại" },
                                 { class: "form-select #{'is-invalid' if @movie.errors[:genre].any?}", required: true } %>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   <%= @movie.errors[:genre].first if @movie.errors[:genre].any? %>
                 </div>
               </div>
@@ -65,7 +65,7 @@
               <div class="mb-3">
                 <%= form.label :duration, "Thời lượng (phút)", class: "form-label required" %>
                 <%= form.number_field :duration, class: "form-control #{'is-invalid' if @movie.errors[:duration].any?}", min: 1, required: true %>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   <%= @movie.errors[:duration].first if @movie.errors[:duration].any? %>
                 </div>
               </div>
@@ -87,7 +87,7 @@
                                                    ], @movie.age_rating),
                                 { prompt: "Chọn độ tuổi" },
                                 { class: "form-select #{'is-invalid' if @movie.errors[:age_rating].any?}", required: true } %>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   <%= @movie.errors[:age_rating].first if @movie.errors[:age_rating].any? %>
                 </div>
               </div>
@@ -103,7 +103,7 @@
                                                    ], @movie.status),
                                 { prompt: "Chọn trạng thái" },
                                 { class: "form-select #{'is-invalid' if @movie.errors[:status].any?}", required: true } %>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                   <%= @movie.errors[:status].first if @movie.errors[:status].any? %>
                 </div>
               </div>
@@ -122,12 +122,11 @@
           <!-- Current Poster Preview -->
           <div class="mb-3">
             <div id="poster-preview" class="text-center">
-              <% if @movie.poster_url.present? || (@movie.poster_image.present? && @movie.persisted?) %>
-                <img src="<%= @movie.poster_url || url_for(@movie.poster_image) %>"
+              <% if @movie.poster_image.attached? && @movie.poster_image.blob.persisted? %>
+                <img src="<%= rails_blob_path(@movie.poster_image, only_path: true) %>"
                      alt="Current poster"
                      class="img-fluid rounded mb-3"
-                     style="max-height: 300px;"
-                     id="current-poster">
+                     style="max-height: 300px;" />
               <% else %>
                 <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3"
                      style="height: 300px;"
@@ -149,7 +148,7 @@
                                 class: "form-control #{'is-invalid' if @movie.errors[:poster_image].any?}",
                                 id: "poster-file-input" %>
             <div class="form-text">Chọn file ảnh từ máy tính (JPG, PNG, GIF)</div>
-            <div class="invalid-feedback">
+            <div class="invalid-feedback d-block">
               <%= @movie.errors[:poster_image].first if @movie.errors[:poster_image].any? %>
             </div>
           </div>

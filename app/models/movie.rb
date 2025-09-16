@@ -13,21 +13,23 @@ class Movie < ApplicationRecord
   }, default: :active
 
   # Validations
-  validates :title, presence: true, length: { minimum: 1, maximum: 255 }
+  validates :title, presence: { message: "không được để trống" }, length: { minimum: 10, too_short: "phải có ít nhất %{count} ký tự", maximum: 255, too_long: "tối đa 255 ký tự" }
   validates :duration, presence: true, numericality: {
     greater_than: 0,
     less_than: 500,
     message: "phải từ 1-500 phút"
   }
   validates :age_rating, inclusion: {
-    in: %w[P T13 T16 T18],
-    message: "phải là P, T13, T16 hoặc T18"
+    in: %w[P K T13 T16 T18 C],
+    message: "phải là P, K, T13, T16, T18 hoặc C"
   }
   validates :genre, presence: true
-  validates :description, presence: true, length: { minimum: 10 }
+  validates :description, presence: { message: "không được để trống" }, length: { minimum: 10 , message: "phải có ít nhất %{count} ký tự"}
 
-  # File upload (nếu dùng Active Storage)
   has_one_attached :poster_image
+
+  after_save :update_poster_url_from_attachment
+
 
   # Scopes
   scope :showing, -> { where(status: :active) }
@@ -82,12 +84,7 @@ class Movie < ApplicationRecord
   end
 
   def poster_url
-    return super if super.present?
-    if poster_image.attached? && poster_image.record.persisted?
-      Rails.application.routes.url_helpers.rails_blob_path(poster_image, only_path: true)
-    else
-      '/assets/no-poster.jpg'
-    end
+    read_attribute(:poster_url).presence || '/assets/no-poster.jpg'
   end
 
   def status_label
@@ -100,5 +97,16 @@ class Movie < ApplicationRecord
 
   def can_be_deleted?
     bookings.confirmed.empty?
+  end
+
+  private
+
+  def update_poster_url_from_attachment
+    if poster_image.attached? && poster_image.blob.persisted?
+      url = Rails.application.routes.url_helpers.rails_blob_path(poster_image, only_path: true)
+      update_column(:poster_url, url)
+    elsif !poster_image.attached?
+      update_column(:poster_url, nil)
+    end
   end
 end

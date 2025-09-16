@@ -187,7 +187,7 @@
                 <tr>
                   <td><%= showtime.show_date.strftime("%d/%m/%Y") %></td>
                   <td><%= showtime.show_time.strftime("%H:%M") %></td>
-                  <td><%= showtime.screen.name if showtime.screen %></td>
+                  <td><%= showtime.screen.screen_name if showtime.screen %></td>
                   <td>
                     <span class="badge bg-success">Hoạt động</span>
                   </td>
@@ -219,7 +219,7 @@
             <div class="border-bottom pb-3 mb-3">
               <div class="d-flex justify-content-between align-items-start">
                 <div>
-                  <strong><%= review.user.name if review.user %></strong>
+                  <strong><%= review.player.first_name if review.player %></strong>
                   <div class="text-warning">
                     <% review.rating.times do %>
                       <i class="fas fa-star"></i>
@@ -233,7 +233,7 @@
                   <%= time_ago_in_words(review.created_at) %> trước
                 </small>
               </div>
-              <p class="mb-0 mt-2"><%= review.content %></p>
+              <p class="mb-0 mt-2"><%= review.comment %></p>
             </div>
           <% end %>
         <% else %>

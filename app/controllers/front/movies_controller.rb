@@ -61,7 +61,7 @@ module Front
                              .where.not(id: @movie.id)
                              .where(genre: @movie.genre)
                              .limit(6)
-                             .order('RAND()') # PostgreSQL, dùng RAND() cho MySQL
+                             .order('RAND()')
     end
 
     # GET /movies/now_showing

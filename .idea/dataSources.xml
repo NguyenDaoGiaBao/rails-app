@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="rails-app@localhost" uuid="c64aa77e-6515-4366-b80b-26d849e5c609">
+    <data-source source="LOCAL" name="rails-app@localhost" uuid="6f1cb50e-ae7e-47dd-8453-d904f845d49e">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

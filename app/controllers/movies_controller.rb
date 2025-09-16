@@ -20,7 +20,6 @@ class MoviesController < ApplicationController
                        .where('show_date >= ?', Date.current)
                        .order(:show_date, :show_time)
     @reviews = @movie.reviews.approved.recent.limit(10)
-    byebug
     @stats = movie_stats
   end
 
