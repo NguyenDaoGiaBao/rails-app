@@ -46,7 +46,20 @@ class MoviesController < ApplicationController
 
   # PATCH/PUT /admin/movies/1
   def update
-    if @movie.update(movie_params)
+    @movie = Movie.find(params[:id])
+
+    if params[:movie][:remove_image_ids].present?
+      params[:movie][:remove_image_ids].each do |image_id|
+        image = @movie.description_images.find_by(id: image_id)
+        image.purge if image
+      end
+    end
+
+    if @movie.update(movie_params_without_images)
+      if params[:movie][:description_images].present?
+        @movie.description_images.attach(params[:movie][:description_images])
+      end
+
       redirect_to movie_path(@movie),
                   notice: "Phim '#{@movie.title}' đã được cập nhật."
     else
@@ -120,8 +133,15 @@ class MoviesController < ApplicationController
   def movie_params
     params.require(:movie).permit(
       :title, :description, :genre, :duration,
-      :poster_url, :poster_image, :age_rating, :status
+      :poster_url, :poster_image, :age_rating, :status,
+      description_images: [],
+      remove_image_ids: []
     )
+  end
+
+  def movie_params_without_images
+    params.require(:movie).permit(:title, :description, :genre, :duration,
+                                  :age_rating, :status, :poster_image)
   end
 
   def movie_stats

@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       post :bulk_actions
     end
   end
+  resources :screens
 
   get "/", to: "dashboard#index"
   get "/login", to: "auth#login"

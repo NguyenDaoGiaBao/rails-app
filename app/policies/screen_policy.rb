@@ -1,30 +1,31 @@
-class UserPolicy < ApplicationPolicy
+class ScreenPolicy < ApplicationPolicy
   # NOTE: Up to Pundit v2.3.1, the inheritance was declared as
   # `Scope < Scope` rather than `Scope < ApplicationPolicy::Scope`.
   # In most cases the behavior will be identical, but if updating existing
   # code, beware of possible changes to the ancestors:
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
-  attr_reader :user
+  attr_reader :user, :screen
 
-  def initialize(user, _record)
+  def initialize(user, screen)
     @user = user
+    @screen = screen
   end
 
   def index?
-    user.admin? || user.manager?
-  end
-
-  def show?
-    user.admin? || user.manager?
-  end
-
-  def create?
-    user.admin? || user.manager?
+    user.admin? || user.manager? || user.member?
   end
 
   def new?
     create?
+  end
+
+  def create?
+    user.admin?
+  end
+
+  def edit?
+    update?
   end
 
   def update?
@@ -32,29 +33,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.admin?
-  end
-
-  def show_side?
     user.admin? || user.manager?
-  end
-
-  def show_side_user?
-    user.admin? || user.manager?
-  end
-
-  def show_side_player?
-    user.admin? || user.manager? || user.member?
-  end
-
-  def show_side_movie?
-    user.admin? || user.manager? || user.member?
-  end
-  def show_side_screen?
-    user.admin? || user.manager? || user.member?
-  end
-  def show_side_club?
-    user.admin? || user.manager? || user.member?
   end
 
   class Scope < ApplicationPolicy::Scope
@@ -62,5 +41,12 @@ class UserPolicy < ApplicationPolicy
     # def resolve
     #   scope.all
     # end
+    def resolve
+      if user.admin? || user.manager?
+        scope.all
+      else
+        scope.none
+      end
+    end
   end
 end
