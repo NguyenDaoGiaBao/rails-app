@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     end
   end
   resources :screens
+  resources :showtimes
 
   get "/", to: "dashboard#index"
   get "/login", to: "auth#login"
