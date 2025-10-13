@@ -96,10 +96,9 @@
               <td>
                 <%= link_to "Xem", showtime_path(showtime), class: "btn btn-sm btn-info" %>
                 <%= link_to "Sửa", edit_showtime_path(showtime), class: "btn btn-sm btn-warning" %>
-                <%= link_to "Xóa", showtime_path(showtime),
-                            method: :delete,
-                            data: { confirm: "Bạn có chắc chắn muốn xóa suất chiếu này?" },
-                            class: "btn btn-sm btn-danger" %>
+                <%= link_to "Xóa",
+                            class: "btn btn-sm btn-danger btn-delete-movie",
+                            data: { id: showtime.id, url: showtime_path(showtime) } do %>Xóa<% end %>
               </td>
             </tr>
           <% end %>
@@ -114,3 +113,50 @@
     </div>
   </div>
 </div>
+<% content_for :scripts do %>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('.btn-delete-movie').forEach(function(button) {
+              button.addEventListener('click', function(e) {
+                  e.preventDefault();
+
+                  const url = this.dataset.url;
+
+                  Swal.fire({
+                      title: 'Bạn có chắc muốn xóa?',
+                      text: "Hành động này không thể hoàn tác!",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#e7515a',
+                      cancelButtonColor: '#3b3f5c',
+                      confirmButtonText: 'Vâng, xóa nó!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          const form = document.createElement('form');
+                          form.method = 'post';
+                          form.action = url;
+
+                          const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                          const csrfInput = document.createElement('input');
+                          csrfInput.type = 'hidden';
+                          csrfInput.name = 'authenticity_token';
+                          csrfInput.value = csrfToken;
+                          form.appendChild(csrfInput);
+
+                          // input method delete
+                          const methodInput = document.createElement('input');
+                          methodInput.type = 'hidden';
+                          methodInput.name = '_method';
+                          methodInput.value = 'delete';
+                          form.appendChild(methodInput);
+
+                          document.body.appendChild(form);
+                          form.submit();
+                      }
+                  });
+              });
+          });
+      });
+  </script>
+<% end %>

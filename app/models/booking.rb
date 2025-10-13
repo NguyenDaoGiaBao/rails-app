@@ -2,6 +2,11 @@ class Booking < ApplicationRecord
   belongs_to :player
   belongs_to :showtime
 
+  has_many :booking_seats, dependent: :destroy
+  has_many :seats, through: :booking_seats
+  has_many :booking_promotions, dependent: :destroy
+  has_many :promotions, through: :booking_promotions
+
   # Enum cho trạng thái đặt vé
   enum :booking_status, {
     pending: 0,
@@ -21,7 +26,7 @@ class Booking < ApplicationRecord
   validates :booking_code, presence: true, uniqueness: true
   validates :total_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :seat_count, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :payment_method, presence: true, if: -> { payment_status_completed? }
+  validates :payment_method, presence: true, if: -> { completed? }
 
   # Scope lọc các booking sắp hết hạn
   scope :expiring_soon, ->(minutes = 30) { where(expiry_time: Time.current..(Time.current + minutes.minutes)) }

@@ -1,6 +1,6 @@
 class Player < ApplicationRecord
   belongs_to :created_by, class_name: 'User'
-  has_many :bookings
+  has_many :bookings, dependent: :restrict_with_error
   has_many :reviews
 
   has_secure_password
