@@ -39,6 +39,12 @@ Rails.application.routes.draw do
   end
   resources :screens
   resources :showtimes
+  resources :bookings do
+    member do
+      post :confirm
+      post :cancel
+    end
+  end
 
   get "/", to: "dashboard#index"
   get "/login", to: "auth#login"

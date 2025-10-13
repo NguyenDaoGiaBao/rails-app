@@ -52,6 +52,8 @@ class PlayersController < ApplicationController
   def update
     authorize @player
     if @player.update(player_params)
+      # render plain: ap(@player, plain: true)
+      PlayerMailer.change_password_email(@player).deliver_now
       redirect_to players_path, notice: "Cập nhật thành công."
     else
       render :show, status: :unprocessable_entity

@@ -1,0 +1,140 @@
+<%= form_with(model: booking, local: true) do |f| %>
+  <% if booking.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(booking.errors.count, "lỗi") %> đã xảy ra:</h4>
+      <ul>
+        <% booking.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= f.label :player_id, "Khách hàng", class: "form-label" %>
+        <%= f.select :player_id,
+                     options_from_collection_for_select(@players, :id, :first_name, booking.player_id),
+                     { prompt: "Chọn khách hàng" },
+                     class: "form-select",
+                     required: true %>
+        <small class="form-text text-muted">Chọn người đặt vé</small>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= f.label :showtime_id, "Suất chiếu", class: "form-label" %>
+        <%= f.select :showtime_id,
+                     grouped_options_for_select(
+                       @showtimes.group_by { |s| s.show_date }.map do |date, showtimes|
+                         [
+                           date.strftime("%d/%m/%Y"),
+                           showtimes.map { |s| ["#{s.movie.title} - #{s.show_time.strftime('%H:%M')} - #{s.screen.screen_name}", s.id] }
+                         ]
+                       end,
+                       booking.showtime_id
+                     ),
+                     { prompt: "Chọn suất chiếu" },
+                     class: "form-select",
+                     required: true %>
+        <small class="form-text text-muted">Chọn phim và giờ chiếu</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="mb-3">
+        <%= f.label :seat_count, "Số lượng ghế", class: "form-label" %>
+        <%= f.number_field :seat_count,
+                           class: "form-control",
+                           min: "1",
+                           required: true %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="mb-3">
+        <%= f.label :total_amount, "Tổng tiền (đ)", class: "form-label" %>
+        <%= f.number_field :total_amount,
+                           class: "form-control",
+                           step: "1000",
+                           min: "0",
+                           required: true %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="mb-3">
+        <%= f.label :payment_method, "Phương thức thanh toán", class: "form-label" %>
+        <%= f.select :payment_method,
+                     options_for_select([
+                                          ["Tiền mặt", "cash"],
+                                          ["Thẻ tín dụng", "card"],
+                                          ["MoMo", "momo"],
+                                          ["ZaloPay", "zalopay"],
+                                          ["VNPay", "vnpay"]
+                                        ], booking.payment_method),
+                     { include_blank: "Chọn phương thức" },
+                     class: "form-select" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="mb-3">
+        <%= f.label :booking_status, "Trạng thái đặt vé", class: "form-label" %>
+        <%= f.select :booking_status,
+                     options_for_select([
+                                          ["Chờ xử lý", "pending"],
+                                          ["Đã xác nhận", "confirmed"],
+                                          ["Đã hủy", "cancelled"],
+                                          ["Hết hạn", "expired"]
+                                        ], booking.booking_status),
+                     {},
+                     class: "form-select" %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="mb-3">
+        <%= f.label :payment_status, "Trạng thái thanh toán", class: "form-label" %>
+        <%= f.select :payment_status,
+                     options_for_select([
+                                          ["Chờ thanh toán", "pending_payment"],
+                                          ["Đã thanh toán", "completed"],
+                                          ["Thất bại", "failed"]
+                                        ], booking.payment_status),
+                     {},
+                     class: "form-select" %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="mb-3">
+        <%= f.label :expiry_time, "Thời gian hết hạn", class: "form-label" %>
+        <%= f.datetime_field :expiry_time,
+                             class: "form-control",
+                             value: booking.expiry_time&.strftime("%Y-%m-%dT%H:%M") %>
+        <small class="form-text text-muted">Để trống sẽ tự động đặt 15 phút</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :notes, "Ghi chú", class: "form-label" %>
+    <%= f.text_area :notes,
+                    class: "form-control",
+                    rows: 3,
+                    placeholder: "Ghi chú thêm về đặt vé..." %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.submit booking.new_record? ? "Tạo đặt vé" : "Cập nhật đặt vé",
+                 class: "btn btn-primary" %>
+    <%= link_to "Hủy", bookings_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

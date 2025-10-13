@@ -77,10 +77,14 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:         "smtp.gmail.com",
+    # address:         "sandbox.smtp.mailtrap.io",
     port:            587,
     domain:          "gmail.com",
-    user_name:       "giabaovnjp@gmail.com",
-    password:        "Giabao204$",
+    user_name:       "contact.user.notice@gmail.com",
+    password:        "goqbljjqdxutdlqo",
+    # domain:          "sandbox.smtp.mailtrap.io",
+    # user_name:       "d0dc1668fc09f8",
+    # password:        "bbaa66ed9680ac",
     authentication:  "plain",
     enable_starttls_auto: true,
     open_timeout:    5,

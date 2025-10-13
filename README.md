@@ -13,7 +13,7 @@
 ## ⚙️ Setup Instructions
 
 ```
-git clone https://gitlab.com/hungbuiqb16/rails-app
+git clone https://github.com/NguyenDaoGiaBao/rails-app
 cd rails-app
 docker-compose up --build
 ```
