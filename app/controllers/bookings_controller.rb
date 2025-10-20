@@ -49,6 +49,7 @@ class BookingsController < ApplicationController
   def show
     @booking_seats = @booking.booking_seats.includes(:seat)
     @booking_promotions = @booking.booking_promotions.includes(:promotion)
+    # render plain: ap(@booking.as_json, plain: true)
   end
 
   # GET /bookings/new
@@ -65,6 +66,7 @@ class BookingsController < ApplicationController
   def edit
     @showtimes = Showtime.includes(:movie, :screen).order(:show_date, :show_time)
     @players = Player.all
+    # render plain: ap(@booking.as_json, plain: true)
   end
 
   # POST /bookings

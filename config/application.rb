@@ -25,5 +25,14 @@ module RailsApp
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :forbidden
+    initializer "disable_webpacker_bootstrap", before: :load_config_initializers do
+      webpacker_config = Rails.root.join("config/webpacker.yml")
+      if !File.exist?(webpacker_config)
+        puts "⚠️  Skipping Webpacker bootstrap because config/webpacker.yml not found"
+        module ::Webpacker
+          def self.bootstrap; end
+        end
+      end
+    end
   end
 end

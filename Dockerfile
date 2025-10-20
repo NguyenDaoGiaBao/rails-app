@@ -1,5 +1,11 @@
 FROM ruby:3.4.4
 
+ENV RAILS_ENV=development
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yarn
+
 RUN apt-get update -qq && apt-get install -y \
     build-essential \
     rustc \
@@ -8,8 +14,6 @@ RUN apt-get update -qq && apt-get install -y \
     zlib1g-dev \
     libgmp-dev \
     default-libmysqlclient-dev \
-    nodejs \
-    yarn \
     tzdata
 
 RUN useradd -m www
