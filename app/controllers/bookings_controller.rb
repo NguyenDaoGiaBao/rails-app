@@ -87,13 +87,15 @@ class BookingsController < ApplicationController
 
   # PATCH/PUT /bookings/:id
   def update
+    @booking = Booking.find(params[:id])
     if @booking.update(booking_params)
       redirect_to @booking, notice: 'Cập nhật đặt vé thành công.'
-    else
+    end
+    rescue ActiveRecord::StaleObjectError
       @showtimes = Showtime.includes(:movie, :screen)
       @players = Player.all
-      render :edit, status: :unprocessable_entity
-    end
+      flash.now[:alert] = "Dữ liệu này đã được người khác cập nhật trước bạn. Vui lòng tải lại trang."
+      render :edit, status: :conflict
   end
 
   # DELETE /bookings/:id
@@ -135,7 +137,7 @@ class BookingsController < ApplicationController
     params.require(:booking).permit(
       :player_id, :showtime_id, :total_amount, :seat_count,
       :booking_status, :payment_status, :payment_method,
-      :expiry_time, :notes
+      :expiry_time, :notes, :lock_version
     )
   end
 end

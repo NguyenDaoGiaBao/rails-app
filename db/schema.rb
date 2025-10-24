@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_22_022804) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -77,6 +77,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.decimal "original_amount", precision: 10, scale: 2, comment: "Tiền gốc trước giảm giá"
     t.decimal "discount_amount", precision: 10, scale: 2, default: "0.0", comment: "Tiền được giảm"
     t.string "promotion_code", comment: "Mã giảm giá đã dùng"
+    t.integer "lock_version"
     t.index ["booking_code"], name: "index_bookings_on_booking_code", unique: true
     t.index ["booking_status", "expiry_time"], name: "index_bookings_on_status_expiry"
     t.index ["booking_status"], name: "index_bookings_on_booking_status"

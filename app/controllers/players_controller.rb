@@ -14,6 +14,11 @@ class PlayersController < ApplicationController
       ["Dashboard", root_path],
       ["List front", nil]
     ]
+
+    Player.find_in_batches(batch_size: 10) do |players|
+      player_ids = players.map(&:id)
+      SendPlayerEmailJob.perform_later(player_ids)
+    end
   end
 
   def new

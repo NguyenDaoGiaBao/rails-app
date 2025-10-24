@@ -68,7 +68,10 @@ Rails.application.routes.draw do
   delete "/front-logout", to: "sessions#destroy", as: :player_logout
   namespace :front do
     get "booking", to: "bookings#index"
+    get "bookings/new",  to: "bookings#new"
     post "booking", to: "bookings#create"
+
+    resources :movies, only: [:index, :show]
   end
 
 end
