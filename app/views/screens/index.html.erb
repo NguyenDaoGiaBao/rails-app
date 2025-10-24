@@ -1,0 +1,465 @@
+<%#= debug @screens %>
+<style>
+    #flash-messages {
+        position: fixed;
+        top: 65px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    .flash-message {
+        background: #333;
+        color: #fff;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        opacity: 0.95;
+        min-width: 200px;
+        max-width: 300px;
+        font-size: 14px;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .flash-notice {
+        background: #28a745; /* xanh lá */
+    }
+
+    .flash-alert {
+        background: #dc3545; /* đỏ */
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(-120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 0.95; }
+    }
+</style>
+
+<div class="container-fluid py-4">
+  <div id="flash-messages">
+    <% flash.each do |type, message| %>
+      <div class="flash-message flash-<%= type %>">
+        <%= message %>
+      </div>
+    <% end %>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <!-- Header Section -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3 mb-1 text-gray-800">
+            <i class="fas fa-desktop me-2 text-primary"></i>Screens Management
+          </h1>
+          <p class="text-muted mb-0">Manage cinema screens and their configurations</p>
+        </div>
+        <%= link_to new_screen_path, class: "btn btn-primary btn-lg" do %>
+          <i class="fas fa-plus me-2"></i>New Screen
+        <% end %>
+      </div>
+
+      <!-- Stats Cards (Optional) -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    Total Screens
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    <%= @screens.count %>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-desktop fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    Active Screens
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    <%= @screens.where(status: 'active').count %>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                    Total Seats
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    <%= @screens.sum(:total_seats) %>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-chair fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                    Avg Seats/Screen
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    <%= @screens.count > 0 ? (@screens.sum(:total_seats) / @screens.count).round : 0 %>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Table Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-table me-2"></i>Screens Overview
+          </h6>
+          <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                 aria-labelledby="dropdownMenuLink">
+              <div class="dropdown-header">Actions:</div>
+              <a class="dropdown-item" href="#">Export to Excel</a>
+              <a class="dropdown-item" href="#">Print Report</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Refresh Data</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="border-0 px-4 py-3">
+                    <h6 class="font-weight-bold">ID</h6>
+                  </th>
+                  <th class="border-0 px-4 py-3 font-weight-bold text-uppercase text-sm">
+                    <i class="fas fa-desktop me-2"></i>Screen Name
+                  </th>
+                  <th class="border-0 px-4 py-3 font-weight-bold text-uppercase text-sm">
+                    <i class="fas fa-chair me-2"></i>Total Seats
+                  </th>
+                  <th class="border-0 px-4 py-3 font-weight-bold text-uppercase text-sm">
+                    <i class="fas fa-film me-2"></i>Type
+                  </th>
+                  <th class="border-0 px-4 py-3 font-weight-bold text-uppercase text-sm">
+                    <i class="fas fa-info-circle me-2"></i>Status
+                  </th>
+                  <th class="border-0 px-4 py-3 font-weight-bold text-uppercase text-sm text-center">
+                    <i class="fas fa-cogs me-2"></i>Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+              <% @screens.each_with_index do |screen, index| %>
+                <tr class="<%= 'table-warning' if screen.status == 'maintenance' %>
+                           <%= 'table-danger' if screen.status == 'inactive' %>">
+                  <td class="px-4 py-3">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar avatar-sm me-3">
+                        <h6 class="mb-0 text-sm font-weight-bold">
+                          <%= screen.id %>
+                        </h6>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar avatar-sm me-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                          <i class="fas fa-desktop"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 text-sm font-weight-bold">
+                          <%= screen.screen_name %>
+                        </h6>
+                        <p class="text-xs text-muted mb-0">Screen #<%= index + 1 %></p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-info text-white px-3 py-2 rounded-pill">
+                          <i class="fas fa-chair me-1"></i>
+                          <%= screen.total_seats %> seats
+                        </span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3">
+                    <% case screen.screen_type %>
+                    <% when 'imax' %>
+                        <span class="badge bg-gradient-primary px-3 py-2 rounded-pill">
+                          <i class="fas fa-star me-1"></i>IMAX
+                        </span>
+                    <% when '3d' %>
+                        <span class="badge bg-gradient-success px-3 py-2 rounded-pill">
+                          <i class="fas fa-cube me-1"></i>3D
+                        </span>
+                    <% when '4dx' %>
+                        <span class="badge bg-gradient-warning px-3 py-2 rounded-pill">
+                          <i class="fas fa-rocket me-1"></i>4DX
+                        </span>
+                    <% else %>
+                        <span class="badge bg-gradient-secondary px-3 py-2 rounded-pill">
+                          <i class="fas fa-tv me-1"></i><%= screen.screen_type.upcase %>
+                        </span>
+                    <% end %>
+                  </td>
+                  <td class="px-4 py-3">
+                    <% case screen.status %>
+                    <% when 'active' %>
+                        <span class="badge bg-success px-3 py-2 rounded-pill">
+                          <i class="fas fa-check-circle me-1"></i>Active
+                        </span>
+                    <% when 'inactive' %>
+                        <span class="badge bg-danger px-3 py-2 rounded-pill">
+                          <i class="fas fa-times-circle me-1"></i>Inactive
+                        </span>
+                    <% when 'maintenance' %>
+                        <span class="badge bg-warning px-3 py-2 rounded-pill">
+                          <i class="fas fa-wrench me-1"></i>Maintenance
+                        </span>
+                    <% else %>
+                        <span class="badge bg-secondary px-3 py-2 rounded-pill">
+                          <i class="fas fa-question-circle me-1"></i><%= screen.status.humanize %>
+                        </span>
+                    <% end %>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+<!--                    <button type="button"-->
+<!--                            class="btn btn-sm btn-outline-primary"-->
+<!--                            onclick="showCinemaModal(<%#= screen.id %>)"-->
+<!--                            data-screen-id="<%#= screen.id %>"-->
+<!--                            title="View Details">-->
+<!--                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">-->
+<!--                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>-->
+<!--                        <circle cx="12" cy="12" r="3"></circle>-->
+<!--                      </svg>-->
+<!--                    </button>-->
+                    <%= link_to edit_screen_path(screen), class: "btn btn-sm btn-outline-warning" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      </svg>
+                    <% end %>
+                    <%= link_to "#",
+                                class: "btn btn-sm btn-outline-danger btn-delete-screen",
+                                data: { id: screen.id, url: screen_path(screen) },
+                                title: "Xóa" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              <% if @screens.empty? %>
+                <tr>
+                  <td colspan="6" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="fas fa-inbox fa-3x mb-3"></i>
+                      <h5>No screens found</h5>
+                      <p>Get started by creating your first screen.</p>
+                      <%= link_to "Create Screen", new_screen_path, class: "btn btn-primary" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <% if respond_to?(:paginate) && @screens.respond_to?(:current_page) %>
+          <div class="card-footer py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-muted">
+                Showing <%= @screens.offset_value + 1 %> to <%= [@screens.offset_value + @screens.limit_value, @screens.total_count].min %>
+                of <%= @screens.total_count %> entries
+              </div>
+              <%= paginate @screens, theme: 'bootstrap-5' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom CSS for enhanced styling -->
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(45deg, #1cc88a, #17a673);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(45deg, #f6c23e, #dda20a);
+    }
+
+    .bg-gradient-secondary {
+        background: linear-gradient(45deg, #858796, #60616f);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.075);
+        transition: all 0.3s ease;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+
+    .avatar {
+        position: relative;
+    }
+
+    .text-xs {
+        font-size: 0.75rem;
+    }
+
+    .font-weight-bold {
+        font-weight: 700 !important;
+    }
+
+    .text-gray-800 {
+        color: #5a5c69 !important;
+    }
+
+    .text-gray-300 {
+        color: #dddfeb !important;
+    }
+
+    .animated--fade-in {
+        animation: fadeIn 0.15s ease-in;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-delete-screen').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const url = this.dataset.url;
+
+                Swal.fire({
+                    title: 'Bạn có chắc muốn xóa?',
+                    text: "Hành động này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e7515a',
+                    cancelButtonColor: '#3b3f5c',
+                    confirmButtonText: 'Vâng, xóa nó!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = url;
+
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'authenticity_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+
+                        // input method delete
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'delete';
+                        form.appendChild(methodInput);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        setTimeout(function() {
+            document.querySelectorAll('.flash-message').forEach(function(el) {
+                el.style.transition = "opacity 0.5s ease";
+                el.style.opacity = "0";
+                setTimeout(() => el.remove(), 500);
+            });
+        }, 5000);
+    });
+
+</script>

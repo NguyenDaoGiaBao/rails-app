@@ -27,8 +27,9 @@ class Movie < ApplicationRecord
   validates :description, presence: { message: "không được để trống" }, length: { minimum: 10 , message: "phải có ít nhất %{count} ký tự"}
 
   has_one_attached :poster_image
+  has_many_attached :description_images
 
-  after_save :update_poster_url_from_attachment
+  after_save :update_poster_url
 
 
   # Scopes
@@ -101,12 +102,7 @@ class Movie < ApplicationRecord
 
   private
 
-  def update_poster_url_from_attachment
-    if poster_image.attached? && poster_image.blob.persisted?
-      url = Rails.application.routes.url_helpers.rails_blob_path(poster_image, only_path: true)
-      update_column(:poster_url, url)
-    elsif !poster_image.attached?
-      update_column(:poster_url, nil)
-    end
+  def update_poster_url
+    MoviePosterUpdater.new(self).call
   end
 end

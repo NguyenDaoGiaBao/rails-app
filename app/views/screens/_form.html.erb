@@ -1,0 +1,225 @@
+<div class="card shadow border-0">
+  <div class="card-header bg-gradient-primary py-3">
+    <h6 class="m-0 font-weight-bold text-white">
+      <i class="fas fa-desktop me-2"></i>Screen Information
+    </h6>
+  </div>
+
+  <div class="card-body p-4">
+    <%= form_with model: @screen, local: true, html: { class: "needs-validation", novalidate: true } do |form| %>
+      <!-- Error Messages -->
+      <% if @screen.errors.any? %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Please fix the following errors:</strong>
+          <ul class="mb-0 mt-2">
+            <% @screen.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+
+      <!-- Copy toàn bộ fields từ file new.html.erb -->
+      <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+          <!-- Screen Name -->
+          <div class="mb-4">
+            <%= form.label :screen_name, class: "form-label fw-bold" do %>
+              <i class="fas fa-desktop me-2 text-primary"></i>Screen Name
+              <span class="text-danger">*</span>
+            <% end %>
+            <%= form.text_field :screen_name,
+                                class: "form-control form-control-lg #{@screen.errors[:screen_name].any? ? 'is-invalid' : ''}",
+                                placeholder: "Enter screen name (e.g., Screen A, IMAX Theater 1)",
+                                required: true %>
+            <% if @screen.errors[:screen_name].any? %>
+              <div class="invalid-feedback">
+                <%= @screen.errors[:screen_name].first %>
+              </div>
+            <% end %>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>
+              Choose a unique and descriptive name for your screen
+            </div>
+          </div>
+
+          <!-- Total Seats -->
+          <div class="mb-4">
+            <%= form.label :total_seats, class: "form-label fw-bold" do %>
+              <i class="fas fa-chair me-2 text-success"></i>Total Seats
+              <span class="text-danger">*</span>
+            <% end %>
+            <div class="input-group input-group-lg">
+                    <span class="input-group-text">
+                      <i class="fas fa-chair"></i>
+                    </span>
+              <%= form.number_field :total_seats,
+                                    class: "form-control #{@screen.errors[:total_seats].any? ? 'is-invalid' : ''}",
+                                    placeholder: "0",
+                                    min: 1,
+                                    max: 1000,
+                                    required: true %>
+              <span class="input-group-text">seats</span>
+              <% if @screen.errors[:total_seats].any? %>
+                <div class="invalid-feedback">
+                  <%= @screen.errors[:total_seats].first %>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>
+              Enter the maximum seating capacity (1-1000 seats)
+            </div>
+          </div>
+
+          <!-- Screen Type -->
+          <div class="mb-4">
+            <%= form.label :screen_type, class: "form-label fw-bold" do %>
+              <i class="fas fa-film me-2 text-warning"></i>Screen Type
+              <span class="text-danger">*</span>
+            <% end %>
+            <div class="row">
+              <% screen_types = [
+                ['Standard', 'standard', 'fas fa-tv', 'bg-secondary'],
+                ['IMAX', 'imax', 'fas fa-star', 'bg-primary'],
+                ['2D', '2d', 'fas fa-volume-up', 'bg-dark'],
+                ['3D', '3d', 'fas fa-cube', 'bg-success'],
+                ['4DX', '4dx', 'fas fa-rocket', 'bg-warning'],
+                ['VIP', 'vip', 'fas fa-crown', 'bg-info']
+              ] %>
+              <% screen_types.each do |label, value, icon, bg_class| %>
+                <div class="col-md-6 mb-2">
+                  <input type="radio"
+                         class="btn-check"
+                         name="screen[screen_type]"
+                         id="screen_type_<%= value %>"
+                         value="<%= value %>"
+                         <%= 'checked' if @screen.screen_type == value %>
+                         required>
+                  <label class="btn btn-outline-primary w-100 py-3 d-flex align-items-center justify-content-center"
+                         for="screen_type_<%= value %>">
+                          <span class="badge <%= bg_class %> me-2">
+                            <i class="<%= icon %>"></i>
+                          </span>
+                    <%= label %>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+            <% if @screen.errors[:screen_type].any? %>
+              <div class="text-danger small mt-1">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <%= @screen.errors[:screen_type].first %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-6">
+          <!-- Status -->
+          <div class="mb-4">
+            <%= form.label :status, class: "form-label fw-bold" do %>
+              <i class="fas fa-info-circle me-2 text-info"></i>Status
+              <span class="text-danger">*</span>
+            <% end %>
+            <div class="row">
+              <% statuses = [
+                ['Active', 'active', 'fas fa-check-circle', 'success'],
+                ['Inactive', 'inactive', 'fas fa-times-circle', 'danger'],
+                ['Maintenance', 'maintenance', 'fas fa-wrench', 'warning']
+              ] %>
+              <% statuses.each do |label, value, icon, color| %>
+                <div class="col-12 mb-2">
+                  <div class="form-check form-check-lg">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="screen[status]"
+                           id="status_<%= value %>"
+                           value="<%= value %>"
+                           <%= 'checked' if @screen.status == value || (@screen.status.blank? && value == 'active') %>
+                           required>
+                    <label class="form-check-label d-flex align-items-center" for="status_<%= value %>">
+                            <span class="badge bg-<%= color %> me-2">
+                              <i class="<%= icon %>"></i>
+                            </span>
+                      <div>
+                        <strong><%= label %></strong>
+                        <div class="text-muted small">
+                          <% case value %>
+                          <% when 'active' %>
+                            Screen is operational and available for bookings
+                          <% when 'inactive' %>
+                            Screen is temporarily unavailable
+                          <% when 'maintenance' %>
+                            Screen is under maintenance or repair
+                          <% end %>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <% if @screen.errors[:status].any? %>
+              <div class="text-danger small mt-1">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <%= @screen.errors[:status].first %>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <%= form.label :description, class: "form-label fw-bold" do %>
+              <i class="fas fa-align-left me-2 text-secondary"></i>Description
+            <% end %>
+            <%= form.text_area :description,
+                               class: "form-control",
+                               rows: 4,
+                               placeholder: "Enter any additional details about this screen..." %>
+            <div class="form-text">
+              <i class="fas fa-info-circle me-1"></i>
+              Optional: Provide additional information about the screen
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card bg-light">
+            <div class="card-body py-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                  <i class="fas fa-info-circle me-2"></i>
+                  <small>Fields marked with <span class="text-danger">*</span> are required</small>
+                </div>
+                <div class="btn-group">
+                  <%= link_to screens_path, class: "btn btn-outline-secondary btn-lg me-2" do %>
+                    <i class="fas fa-times me-2"></i>Cancel
+                  <% end %>
+                  <%= form.submit (@screen.persisted? ? "Update Screen" : "Create Screen"),
+                                  class: (@screen.persisted? ? "btn btn-warning btn-lg px-4" : "btn btn-primary btn-lg px-4"),
+                                  data: {
+                                    confirm: (@screen.persisted? ?
+                                                "Are you sure you want to update this screen?" :
+                                                "Are you sure you want to create this screen?"),
+                                    disable_with: "<i class='fas fa-spinner fa-spin me-2'></i>Processing..."
+                                  } do %>
+                    <i class="fas <%= @screen.persisted? ? 'fa-save' : 'fa-plus' %> me-2"></i>
+                    <%= @screen.persisted? ? "Update Screen" : "Create Screen" %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

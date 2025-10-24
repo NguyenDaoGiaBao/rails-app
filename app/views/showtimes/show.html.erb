@@ -1,0 +1,176 @@
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Chi tiết suất chiếu</h1>
+    <div>
+      <%= link_to "Sửa", edit_showtime_path(@showtime), class: "btn btn-warning" %>
+      <%= link_to "Quay lại", showtimes_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Thông tin cơ bản</h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-borderless">
+            <tr>
+              <th width="30%">Phim:</th>
+              <td><strong><%= @showtime.movie.title %></strong></td>
+            </tr>
+            <tr>
+              <th>Phòng chiếu:</th>
+              <td><%= @showtime.screen.screen_name %></td>
+            </tr>
+            <tr>
+              <th>Ngày chiếu:</th>
+              <td><%= @showtime.show_date.strftime("%A, %d/%m/%Y") %></td>
+            </tr>
+            <tr>
+              <th>Giờ chiếu:</th>
+              <td><%= @showtime.show_time.strftime("%H:%M") %></td>
+            </tr>
+            <tr>
+              <th>Trạng thái:</th>
+              <td>
+                <% case @showtime.status %>
+                <% when "active" %>
+                  <span class="badge bg-success">Đang hoạt động</span>
+                <% when "inactive" %>
+                  <span class="badge bg-secondary">Ngừng hoạt động</span>
+                <% when "sold_out" %>
+                  <span class="badge bg-danger">Hết vé</span>
+                <% end %>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5>Thông tin giá vé</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-4">
+              <div class="p-3 border rounded">
+                <h6 class="text-muted">Ghế thường</h6>
+                <h3 class="text-primary">
+                  <%= number_to_currency(@showtime.regular_price, unit: "đ", format: "%n%u") %>
+                </h3>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 border rounded">
+                <h6 class="text-muted">Ghế VIP</h6>
+                <h3 class="text-success">
+                  <%= number_to_currency(@showtime.vip_price, unit: "đ", format: "%n%u") %>
+                </h3>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 border rounded">
+                <h6 class="text-muted">Ghế đôi</h6>
+                <h3 class="text-danger">
+                  <%= number_to_currency(@showtime.couple_price, unit: "đ", format: "%n%u") %>
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Tình trạng ghế</h5>
+        </div>
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <h2 class="display-4">
+              <%= @showtime.available_seats %>/<%= @showtime.total_seats %>
+            </h2>
+            <p class="text-muted">Ghế còn trống / Tổng ghế</p>
+          </div>
+
+          <div class="progress mb-3" style="height: 25px;">
+            <% available_percent = (@showtime.available_seats.to_f / @showtime.total_seats * 100).round %>
+            <div class="progress-bar <%= available_percent > 50 ? 'bg-success' : available_percent > 20 ? 'bg-warning' : 'bg-danger' %>"
+                 role="progressbar"
+                 style="width: <%= available_percent %>%"
+                 aria-valuenow="<%= available_percent %>"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+              <%= available_percent %>%
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <p class="mb-1">
+              <strong>Đã đặt:</strong>
+              <%= @showtime.total_seats - @showtime.available_seats %> ghế
+            </p>
+            <p class="mb-0">
+              <strong>Tỷ lệ lấp đầy:</strong>
+              <%= (100 - available_percent) %>%
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5>Thông tin khác</h5>
+        </div>
+        <div class="card-body">
+          <p class="mb-2">
+            <strong>Tạo lúc:</strong><br>
+            <small><%= @showtime.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+          </p>
+          <p class="mb-0">
+            <strong>Cập nhật lúc:</strong><br>
+            <small><%= @showtime.updated_at.strftime("%d/%m/%Y %H:%M") %></small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookings Section -->
+  <% if @showtime.bookings.any? %>
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Danh sách đặt vé (<%= @showtime.bookings.count %>)</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>Mã đặt vé</th>
+              <th>Khách hàng</th>
+              <th>Số ghế</th>
+              <th>Tổng tiền</th>
+              <th>Thời gian đặt</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @showtime.bookings.each do |booking| %>
+              <tr>
+                <td>#<%= booking.id %></td>
+                <td><%= booking.player.last_name + " " + booking.player.first_name %></td>
+                <td><%= booking.seat_count %></td>
+                <td><%= number_to_currency(booking.total_amount, unit: "đ", format: "%n%u") %></td>
+                <td><%= booking.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

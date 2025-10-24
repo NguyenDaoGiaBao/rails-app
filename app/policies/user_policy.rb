@@ -50,6 +50,9 @@ class UserPolicy < ApplicationPolicy
   def show_side_movie?
     user.admin? || user.manager? || user.member?
   end
+  def show_side_screen?
+    user.admin? || user.manager? || user.member?
+  end
   def show_side_club?
     user.admin? || user.manager? || user.member?
   end

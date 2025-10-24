@@ -1,0 +1,229 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Quản lý đặt vé</h1>
+    <%= link_to "Tạo đặt vé mới", new_booking_path, class: "btn btn-primary" %>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-2">
+      <div class="card text-center">
+        <div class="card-body">
+          <h6 class="text-muted">Tổng đặt vé</h6>
+          <h3><%= @stats[:total] %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center border-warning">
+        <div class="card-body">
+          <h6 class="text-muted">Chờ xử lý</h6>
+          <h3 class="text-warning"><%= @stats[:pending] %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center border-success">
+        <div class="card-body">
+          <h6 class="text-muted">Đã xác nhận</h6>
+          <h3 class="text-success"><%= @stats[:confirmed] %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center border-danger">
+        <div class="card-body">
+          <h6 class="text-muted">Đã hủy</h6>
+          <h3 class="text-danger"><%= @stats[:cancelled] %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center border-secondary">
+        <div class="card-body">
+          <h6 class="text-muted">Hết hạn</h6>
+          <h3 class="text-secondary"><%= @stats[:expired] %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card text-center border-primary">
+        <div class="card-body">
+          <h6 class="text-muted">Doanh thu</h6>
+          <h3 class="text-primary"><%= number_to_currency(@stats[:total_revenue], unit: "đ", format: "%n%u", precision: 0) %></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <%= form_with url: bookings_path, method: :get, class: "row g-3" do |f| %>
+        <div class="col-md-2">
+          <%= f.label :booking_code, "Mã đặt vé", class: "form-label" %>
+          <%= f.text_field :booking_code, value: params[:booking_code], class: "form-control", placeholder: "BK..." %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.label :booking_status, "Trạng thái đặt vé", class: "form-label" %>
+          <%= f.select :booking_status,
+                       options_for_select([
+                                            ["Tất cả", ""],
+                                            ["Chờ xử lý", "pending"],
+                                            ["Đã xác nhận", "confirmed"],
+                                            ["Đã hủy", "cancelled"],
+                                            ["Hết hạn", "expired"]
+                                          ], params[:booking_status]),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.label :payment_status, "Trạng thái thanh toán", class: "form-label" %>
+          <%= f.select :payment_status,
+                       options_for_select([
+                                            ["Tất cả", ""],
+                                            ["Chờ thanh toán", "pending_payment"],
+                                            ["Đã thanh toán", "completed"],
+                                            ["Thất bại", "failed"]
+                                          ], params[:payment_status]),
+                       {},
+                       class: "form-select" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.label :from_date, "Từ ngày", class: "form-label" %>
+          <%= f.date_field :from_date, value: params[:from_date], class: "form-control" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.label :to_date, "Đến ngày", class: "form-label" %>
+          <%= f.date_field :to_date, value: params[:to_date], class: "form-control" %>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <%= f.submit "Lọc", class: "btn btn-secondary me-2" %>
+          <%= link_to "Xóa", bookings_path, class: "btn btn-outline-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Bookings Table -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>Mã đặt vé</th>
+            <th>Khách hàng</th>
+            <th>Phim</th>
+            <th>Suất chiếu</th>
+            <th>Số ghế</th>
+            <th>Tổng tiền</th>
+            <th>Thanh toán</th>
+            <th>Trạng thái</th>
+            <th>Hết hạn</th>
+            <th>Hành động</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @bookings.each do |booking| %>
+            <tr class="<%= 'table-danger' if booking.expiry_time && booking.expiry_time < Time.current && booking.pending? %>">
+              <td>
+                <strong><%= link_to booking.booking_code, booking_path(booking) %></strong>
+                <br>
+                <small class="text-muted"><%= booking.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+              </td>
+              <td>
+                <%= booking.player.first_name %><br>
+                <small class="text-muted"><%= booking.player.email %></small>
+              </td>
+              <td>
+                <strong><%= booking.showtime.movie.title %></strong><br>
+                <small class="text-muted"><%= booking.showtime.screen.screen_name %></small>
+              </td>
+              <td>
+                <%= booking.showtime.show_date.strftime("%d/%m/%Y") %><br>
+                <small><%= booking.showtime.show_time.strftime("%H:%M") %></small>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-info"><%= booking.seat_count %> ghế</span>
+              </td>
+              <td>
+                <strong><%= number_to_currency(booking.total_amount, unit: "đ", format: "%n%u", precision: 0) %></strong>
+              </td>
+              <td>
+                <% case booking.payment_status %>
+                <% when "pending_payment" %>
+                  <span class="badge bg-warning">Chờ thanh toán</span>
+                <% when "completed" %>
+                  <span class="badge bg-success">Đã thanh toán</span>
+                  <% if booking.payment_method.present? %>
+                    <br><small class="text-muted"><%= booking.payment_method.upcase %></small>
+                  <% end %>
+                <% when "failed" %>
+                  <span class="badge bg-danger">Thất bại</span>
+                <% end %>
+              </td>
+              <td>
+                <% case booking.booking_status %>
+                <% when "pending" %>
+                  <span class="badge bg-warning">Chờ xử lý</span>
+                <% when "confirmed" %>
+                  <span class="badge bg-success">Đã xác nhận</span>
+                <% when "cancelled" %>
+                  <span class="badge bg-danger">Đã hủy</span>
+                <% when "expired" %>
+                  <span class="badge bg-secondary">Hết hạn</span>
+                <% end %>
+              </td>
+              <td>
+                <% if booking.expiry_time %>
+                  <% if booking.expiry_time > Time.current %>
+                    <small class="text-success">
+                      <%= booking.expiry_time.strftime("%H:%M") %>
+                    </small>
+                  <% else %>
+                    <small class="text-danger">
+                      Đã hết hạn
+                    </small>
+                  <% end %>
+                <% else %>
+                  <small class="text-muted">-</small>
+                <% end %>
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <%= link_to "Xem", booking_path(booking), class: "btn btn-sm btn-info" %>
+
+                  <% if booking.pending? %>
+                    <%= button_to "Xác nhận", confirm_booking_path(booking),
+                                  method: :post,
+                                  class: "btn btn-sm btn-success",
+                                  data: { confirm: "Xác nhận đặt vé này?" } %>
+                  <% end %>
+
+                  <% if booking.pending? || booking.confirmed? %>
+                    <%= button_to "Hủy", cancel_booking_path(booking),
+                                  method: :post,
+                                  class: "btn btn-sm btn-danger",
+                                  data: { confirm: "Hủy đặt vé này?" } %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-3">
+        <%= paginate @bookings %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -14,6 +14,11 @@ class PlayersController < ApplicationController
       ["Dashboard", root_path],
       ["List front", nil]
     ]
+
+    Player.find_in_batches(batch_size: 10) do |players|
+      player_ids = players.map(&:id)
+      SendPlayerEmailJob.perform_later(player_ids)
+    end
   end
 
   def new
@@ -52,6 +57,8 @@ class PlayersController < ApplicationController
   def update
     authorize @player
     if @player.update(player_params)
+      # render plain: ap(@player, plain: true)
+      PlayerMailer.change_password_email(@player).deliver_now
       redirect_to players_path, notice: "Cập nhật thành công."
     else
       render :show, status: :unprocessable_entity

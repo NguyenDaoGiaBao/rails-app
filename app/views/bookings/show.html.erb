@@ -1,0 +1,110 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Chi tiết đặt vé</h2>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <strong>Khách hàng:</strong><br>
+          <%= @booking.player&.first_name || "—" %>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Suất chiếu:</strong><br>
+          <% if @booking.showtime.present? %>
+            <%= @booking.showtime.movie.title %> -
+            <%= @booking.showtime.show_date.strftime("%d/%m/%Y") %> -
+            <%= @booking.showtime.show_time.strftime("%H:%M") %> -
+            <%= @booking.showtime.screen.screen_name %>
+          <% else %>
+            —
+          <% end %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <strong>Số lượng ghế:</strong><br>
+          <%= @booking.seat_count %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <strong>Tổng tiền:</strong><br>
+          <%= number_to_currency(@booking.total_amount, unit: "đ", precision: 0) %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <strong>Phương thức thanh toán:</strong><br>
+          <%=
+            {
+              "cash" => "Tiền mặt",
+              "card" => "Thẻ tín dụng",
+              "momo" => "MoMo",
+              "zalopay" => "ZaloPay",
+              "vnpay" => "VNPay"
+            }[@booking.payment_method] || @booking.payment_method
+          %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <strong>Trạng thái đặt vé:</strong><br>
+          <%=
+            {
+              "pending" => "Chờ xử lý",
+              "confirmed" => "Đã xác nhận",
+              "cancelled" => "Đã hủy",
+              "expired" => "Hết hạn"
+            }[@booking.booking_status] || @booking.booking_status
+          %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <strong>Trạng thái thanh toán:</strong><br>
+          <%=
+            {
+              "pending_payment" => "Chờ thanh toán",
+              "completed" => "Đã thanh toán",
+              "failed" => "Thất bại"
+            }[@booking.payment_status] || @booking.payment_status
+          %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <strong>Thời gian hết hạn:</strong><br>
+          <%= @booking.expiry_time.present? ? l(@booking.expiry_time, format: "%d/%m/%Y %H:%M") : "—" %>
+        </div>
+
+        <div class="col-md-12 mb-3">
+          <strong>Ghi chú:</strong><br>
+          <%= simple_format(@booking.notes.presence || "—") %>
+        </div>
+      </div>
+
+      <% if @booking.booking_seats.any? %>
+        <hr>
+        <h5>Danh sách ghế</h5>
+        <ul>
+          <% @booking.booking_seats.includes(:seat).each do |bs| %>
+            <li>
+              Ghế: <%= bs.seat.seat_code %>
+              (<%= bs.seat.screen.screen_name if bs.seat.screen.present? %>)
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+
+      <% if @booking.booking_promotions.any? %>
+        <hr>
+        <h5>Khuyến mãi áp dụng</h5>
+        <ul>
+          <% @booking.booking_promotions.includes(:promotion).each do |bp| %>
+            <li><%= bp.promotion.promo_name %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <%#= link_to "Chỉnh sửa", edit_booking_path(@booking), class: "btn btn-primary" %>
+    <%= link_to "Danh sách đặt vé", bookings_path, class: "btn btn-secondary" %>
+  </div>
+</div>

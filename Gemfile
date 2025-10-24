@@ -45,6 +45,8 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem 'webpacker', '~> 5.4'
+
 group :development, :test do
   #Faker, a port of Data::Faker from Perl, is used to easily generate fake data: names, addresses, phone numbers, etc.
   gem 'faker', '~> 3.4', '>= 3.4.2'
@@ -73,6 +75,10 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # debug
+  gem 'awesome_print'
+  gem 'debugbar'
 end
 
 group :test do

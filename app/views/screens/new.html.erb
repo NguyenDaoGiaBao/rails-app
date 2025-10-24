@@ -1,0 +1,207 @@
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10 col-md-12">
+      <!-- Header Section -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3 mb-1 text-gray-800">
+            <i class="fas fa-plus-circle me-2 text-primary"></i>Create New Screen
+          </h1>
+          <p class="text-muted mb-0">Add a new cinema screen to your theater</p>
+        </div>
+        <%= link_to screens_path, class: "btn btn-outline-secondary" do %>
+          <i class="fas fa-arrow-left me-2"></i>Back to Screens
+        <% end %>
+      </div>
+
+      <!-- Main Form Card -->
+      <%= render "form" %>>
+
+      <!-- Help Card -->
+      <div class="card mt-4 border-info">
+        <div class="card-header bg-info text-white py-2">
+          <h6 class="m-0 font-weight-bold">
+            <i class="fas fa-question-circle me-2"></i>Need Help?
+          </h6>
+        </div>
+        <div class="card-body py-3">
+          <div class="row">
+            <div class="col-md-4">
+              <h6 class="font-weight-bold text-primary">
+                <i class="fas fa-lightbulb me-2"></i>Screen Naming
+              </h6>
+              <p class="text-sm text-muted mb-0">
+                Use clear, descriptive names like "Theater A", "IMAX Screen 1", or "VIP Lounge"
+              </p>
+            </div>
+            <div class="col-md-4">
+              <h6 class="font-weight-bold text-success">
+                <i class="fas fa-calculator me-2"></i>Seat Calculation
+              </h6>
+              <p class="text-sm text-muted mb-0">
+                Consider aisle space and accessibility requirements when determining total seats
+              </p>
+            </div>
+            <div class="col-md-4">
+              <h6 class="font-weight-bold text-warning">
+                <i class="fas fa-tools me-2"></i>Maintenance Mode
+              </h6>
+              <p class="text-sm text-muted mb-0">
+                Use maintenance status when the screen is temporarily unavailable for repairs
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+    }
+
+    .form-control-lg {
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+
+    .btn-check:checked + .btn-outline-primary {
+        background-color: #4e73df;
+        border-color: #4e73df;
+        transform: scale(1.02);
+        box-shadow: 0 0.25rem 0.5rem rgba(78, 115, 223, 0.3);
+    }
+
+    .form-check-input:checked {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        border-radius: 0.75rem;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .font-weight-bold {
+        font-weight: 700 !important;
+    }
+
+    .text-gray-800 {
+        color: #5a5c69 !important;
+    }
+
+    .text-sm {
+        font-size: 0.875rem;
+    }
+
+    .alert {
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .form-check-lg .form-check-input {
+        margin-top: 0.1rem;
+        transform: scale(1.2);
+    }
+
+    .form-check-lg .form-check-label {
+        font-size: 1rem;
+        padding-left: 0.5rem;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fc;
+        border-color: #d1d3e2;
+        color: #5a5c69;
+    }
+
+    .needs-validation .form-control:invalid {
+        border-color: #e74a3b;
+    }
+
+    .needs-validation .form-control:valid {
+        border-color: #1cc88a;
+    }
+
+    @media (max-width: 768px) {
+        .btn-group {
+            display: flex !important;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn-group .btn {
+            margin: 0.25rem 0 !important;
+        }
+    }
+</style>
+
+<!-- JavaScript for form validation -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bootstrap form validation
+        const forms = document.querySelectorAll('.needs-validation');
+
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        // Real-time seat count validation
+        const seatsInput = document.querySelector('input[name="screen[total_seats]"]');
+        if (seatsInput) {
+            seatsInput.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                const feedback = this.nextElementSibling;
+
+                if (value < 1) {
+                    this.setCustomValidity('Minimum 1 seat required');
+                } else if (value > 1000) {
+                    this.setCustomValidity('Maximum 1000 seats allowed');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        }
+
+        // Auto-generate screen name suggestions
+        const nameInput = document.querySelector('input[name="screen[screen_name]"]');
+        const typeInputs = document.querySelectorAll('input[name="screen[screen_type]"]');
+
+        if (nameInput && typeInputs.length > 0) {
+            typeInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (nameInput.value === '' || nameInput.value.includes('Screen')) {
+                        const type = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+                        nameInput.placeholder = `e.g., ${type} Screen 1, Theater ${type}`;
+                    }
+                });
+            });
+        }
+    });
+</script>
