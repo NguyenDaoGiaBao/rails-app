@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_22_022804) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,7 +39,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "booking_promotions", charset: "utf8mb3", force: :cascade do |t|
+  create_table "booking_promotions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "booking_id", null: false
     t.bigint "promotion_id", null: false
     t.decimal "discount_amount", precision: 10, scale: 2, null: false, comment: "Số tiền được giảm"
@@ -50,7 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["promotion_id"], name: "index_booking_promotions_on_promotion_id"
   end
 
-  create_table "booking_seats", charset: "utf8mb3", force: :cascade do |t|
+  create_table "booking_seats", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "booking_id", null: false
     t.bigint "seat_id", null: false
     t.decimal "seat_price", precision: 10, scale: 2, null: false, comment: "Giá của ghế này VND"
@@ -61,7 +61,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["seat_id"], name: "index_booking_seats_on_seat_id"
   end
 
-  create_table "bookings", charset: "utf8mb3", force: :cascade do |t|
+  create_table "bookings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "booking_code", null: false
     t.bigint "player_id", null: false
     t.bigint "showtime_id", null: false
@@ -77,6 +77,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.decimal "original_amount", precision: 10, scale: 2, comment: "Tiền gốc trước giảm giá"
     t.decimal "discount_amount", precision: 10, scale: 2, default: "0.0", comment: "Tiền được giảm"
     t.string "promotion_code", comment: "Mã giảm giá đã dùng"
+    t.integer "lock_version"
     t.index ["booking_code"], name: "index_bookings_on_booking_code", unique: true
     t.index ["booking_status", "expiry_time"], name: "index_bookings_on_status_expiry"
     t.index ["booking_status"], name: "index_bookings_on_booking_status"
@@ -96,7 +97,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "movies", charset: "utf8mb3", force: :cascade do |t|
+  create_table "movies", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
     t.text "description"
     t.string "genre"
@@ -126,7 +127,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["created_by_id"], name: "index_players_on_created_by_id"
   end
 
-  create_table "promotions", charset: "utf8mb3", force: :cascade do |t|
+  create_table "promotions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "code", null: false
     t.string "name", null: false
     t.text "description"
@@ -146,7 +147,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["status"], name: "index_promotions_on_status"
   end
 
-  create_table "reviews", charset: "utf8mb3", force: :cascade do |t|
+  create_table "reviews", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "movie_id", null: false
     t.bigint "player_id", null: false
     t.integer "rating", null: false, comment: "1-5 stars"
@@ -162,7 +163,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.check_constraint "(`rating` >= 1) and (`rating` <= 5)", name: "reviews_rating_check"
   end
 
-  create_table "screens", charset: "utf8mb3", force: :cascade do |t|
+  create_table "screens", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "screen_name", null: false
     t.integer "total_seats", null: false
     t.string "screen_type", comment: "2D, 3D, IMAX"
@@ -172,7 +173,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["status"], name: "index_screens_on_status"
   end
 
-  create_table "seats", charset: "utf8mb3", force: :cascade do |t|
+  create_table "seats", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "screen_id", null: false
     t.string "seat_row", null: false, comment: "A, B, C..."
     t.integer "seat_number", null: false, comment: "1, 2, 3..."
@@ -194,7 +195,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_015244) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
-  create_table "showtimes", charset: "utf8mb3", force: :cascade do |t|
+  create_table "showtimes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "movie_id", null: false
     t.bigint "screen_id", null: false
     t.date "show_date", null: false

@@ -38,7 +38,6 @@ module Front
 
       # Data for filters
       @genres = Movie.showing.distinct.pluck(:genre).compact.sort
-      @dates = upcoming_show_dates
     end
 
     # GET /movies/1
@@ -112,15 +111,6 @@ module Front
       @movie = Movie.showing.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       redirect_to movies_path, alert: "Phim không tồn tại hoặc không còn chiếu."
-    end
-
-    def upcoming_show_dates
-      Showtime.active
-              .where('show_date >= ?', Date.current)
-              .distinct
-              .pluck(:show_date)
-              .sort
-              .first(7) # 7 ngày tới
     end
   end
 end

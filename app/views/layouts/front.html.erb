@@ -1,70 +1,118 @@
 <!-- app/views/layouts/front.html.erb -->
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= csrf_meta_tags %>
-  <title><%= content_for(:title) || "GB" %></title>
-  <link rel="icon" type="image/x-icon" href="/rf.png"/>
-  <%= stylesheet_link_tag "loader", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "loader" %>
 
-  <!-- BEGIN GLOBAL MANDATORY STYLES -->
-  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
-  <%= stylesheet_link_tag "bootstrap.min", "data-turbo-track": "reload" %>
-  <%= stylesheet_link_tag "plugins", "data-turbo-track": "reload" %>
-  <!-- END GLOBAL MANDATORY STYLES -->
-  <!--  BEGIN CUSTOM STYLE FILE  -->
+  <title><%= content_for(:title) || "CinemaKD" %></title>
+  <link rel="icon" type="image/x-icon" href="/rf.png">
+
+  <!-- Tailwind & Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <%= yield :styles %>
-  <!--  END CUSTOM STYLE FILE  -->
 </head>
-<body>
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <%= link_to "CGV", root_path, class: "navbar-brand fw-bold text-uppercase" %>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <%= link_to "Trang chủ", front_booking_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Đặt vé", front_booking_path, class: "nav-link" %>
-        </li>
-        <li class="nav-item">
-          <%= button_to "Đăng xuất", player_logout_path, method: :delete, class: "nav-link text-danger", form: { class: "d-inline" } %>
-          <%#= link_to "Đăng xuất", player_logout_path, method: :delete, data: { turbo: false }, class: "nav-link text-danger" %>
-        </li>
-      </ul>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- Header / Navbar -->
+<header class="bg-gray-800 text-white shadow-md">
+  <div class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <%= link_to "CinemaKD", root_path, class: "text-2xl font-bold" %>
+        <nav class="hidden md:flex space-x-6">
+          <%= link_to "Trang chủ", root_path, class: "hover:text-gray-300 transition-colors" %>
+          <%= link_to "Đặt vé", front_booking_path, class: "hover:text-gray-300 transition-colors" %>
+        </nav>
+      </div>
+
+      <!-- Right side (Login / Player Info) -->
+      <div class="flex items-center space-x-3">
+        <% if current_player.present? %>
+          <!-- Avatar & Info -->
+          <div class="flex items-center space-x-3">
+            <% if current_player.avatar&.attached? %>
+              <%= image_tag current_player.avatar, class: "w-9 h-9 rounded-full object-cover border border-gray-600" %>
+            <% else %>
+              <div class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-sm font-bold">
+                <%= current_player.first_name.to_s.first.upcase rescue "P" %>
+              </div>
+            <% end %>
+            <span class="text-gray-300 text-sm hidden md:inline">
+              Xin chào, <%= current_player.first_name || current_player.email %> 👋
+            </span>
+          </div>
+
+          <!-- Logout button -->
+          <%= button_to "Đăng xuất",
+                        player_logout_path,
+                        method: :delete,
+                        data: { turbo_confirm: "Bạn chắc chắn muốn đăng xuất?" },
+                        class: "px-4 py-2 bg-red-600 rounded-md hover:bg-red-500 transition-colors text-sm",
+                        form: { class: "inline" } %>
+        <% else %>
+          <!-- If not logged in -->
+          <%= link_to "Đăng nhập", player_login_path, class: "px-4 py-2 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors text-sm" %>
+          <%= link_to "Đăng ký", register_path, class: "px-4 py-2 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors text-sm" %>
+        <% end %>
+      </div>
     </div>
   </div>
-</nav>
+</header>
+
+<!-- Flash messages -->
+<div class="container mx-auto px-4 mt-4">
+  <% if flash[:notice] %>
+    <div class="alert alert-success bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded relative mb-4">
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:alert] %>
+    <div class="alert alert-danger bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+</div>
 
 <!-- Main Content -->
-<main class="container mt-5">
+<main class="container mx-auto flex-1 px-4 py-8">
   <%= yield %>
 </main>
 
 <!-- Footer -->
-<footer class="bg-dark text-white text-center py-4 mt-5">
-  <div class="container">
-    <p class="mb-0">&copy; <%= Time.now.year %> CGV Việt Nam. Đặt vé xem phim trực tuyến.</p>
+<footer class="bg-gray-800 text-white py-6 mt-12">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0">
+        <h2 class="text-xl font-bold">CinemaKD</h2>
+        <p class="text-gray-400 mt-1">Đặt vé xem phim trực tuyến dễ dàng</p>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:space-x-8 text-center md:text-left">
+        <div class="mb-4 md:mb-0">
+          <ul class="space-y-1">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Liên hệ</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Điều khoản sử dụng</a></li>
+          </ul>
+          <div class="flex space-x-4 mt-3 justify-center md:justify-start">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-gray-400 text-sm">
+      &copy; <%= Time.current.year %> CinemaKD. All rights reserved.
+    </div>
   </div>
 </footer>
 
-<%= javascript_include_tag "jquery.min" %>
-<%= javascript_include_tag "vendors.min", "data-turbo-track": "reload"  %>
-<%= javascript_include_tag "bootstrap.bundle.min", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "perfect-scrollbar.min", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "mousetrap.min", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "waves.min", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "app", "data-turbo-track": "reload" %>
-<!-- END GLOBAL MANDATORY SCRIPTS -->
 <%= yield :scripts %>
 </body>
 </html>

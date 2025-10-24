@@ -49,6 +49,7 @@ class BookingsController < ApplicationController
   def show
     @booking_seats = @booking.booking_seats.includes(:seat)
     @booking_promotions = @booking.booking_promotions.includes(:promotion)
+    # render plain: ap(@booking.as_json, plain: true)
   end
 
   # GET /bookings/new
@@ -65,6 +66,7 @@ class BookingsController < ApplicationController
   def edit
     @showtimes = Showtime.includes(:movie, :screen).order(:show_date, :show_time)
     @players = Player.all
+    # render plain: ap(@booking.as_json, plain: true)
   end
 
   # POST /bookings
@@ -85,13 +87,15 @@ class BookingsController < ApplicationController
 
   # PATCH/PUT /bookings/:id
   def update
+    @booking = Booking.find(params[:id])
     if @booking.update(booking_params)
       redirect_to @booking, notice: 'Cập nhật đặt vé thành công.'
-    else
+    end
+    rescue ActiveRecord::StaleObjectError
       @showtimes = Showtime.includes(:movie, :screen)
       @players = Player.all
-      render :edit, status: :unprocessable_entity
-    end
+      flash.now[:alert] = "Dữ liệu này đã được người khác cập nhật trước bạn. Vui lòng tải lại trang."
+      render :edit, status: :conflict
   end
 
   # DELETE /bookings/:id
@@ -133,7 +137,7 @@ class BookingsController < ApplicationController
     params.require(:booking).permit(
       :player_id, :showtime_id, :total_amount, :seat_count,
       :booking_status, :payment_status, :payment_method,
-      :expiry_time, :notes
+      :expiry_time, :notes, :lock_version
     )
   end
 end

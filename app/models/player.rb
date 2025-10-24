@@ -48,7 +48,7 @@ class Player < ApplicationRecord
   scope :by_keyword, ->(keyword) {
       if keyword.present?
         kw = "%#{keyword.downcase}%"
-        where("LOWER(first_name) LIKE :kw OR LOWER(last_name) LIKE :kw", kw: kw)
+        where("LOWER(first_name) LIKE :kw OR LOWER(last_name) LIKE :kw OR LOWER(email) LIKE :kw", kw: kw)
       end
   }
 
