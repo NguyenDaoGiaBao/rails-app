@@ -55,7 +55,7 @@ group :development, :test do
   gem 'byebug', '~> 12.0'
 
   # RuboCop is a Ruby code style checking and code formatting tool.
-  gem 'rubocop', '~> 1.77'
+  gem 'rubocop', '~> 1.81'
 
   # Code coverage for Ruby with a powerful configuration library and automatic merging of coverage across test suites
   gem 'simplecov', '~> 0.22.0'
