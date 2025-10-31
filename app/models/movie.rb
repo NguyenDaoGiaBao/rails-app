@@ -12,6 +12,28 @@ class Movie < ApplicationRecord
     coming_soon: 2
   }, default: :active
 
+  GENRES = {
+    "Action" => "Hành động",
+    "Adventure" => "Phiêu lưu",
+    "Animation" => "Hoạt hình",
+    "Comedy" => "Hài kịch",
+    "Documentary" => "Tài liệu",
+    "Drama" => "Chính kịch",
+    "Horror" => "Kinh dị",
+    "Romance" => "Lãng mạn",
+    "Family" => "Gia đình",
+    "Sci_Fi" => "Khoa học viễn tưởng"
+  }.freeze
+
+  AGE_RATINGS = {
+    'P' => 'P - Phù hợp mọi lứa tuổi',
+    'K' => 'K - Dành cho trẻ em dưới 13 tuổi',
+    'T13' => 'T13 - Từ 13 tuổi trở lên',
+    'T16' => 'T16 - Từ 16 tuổi trở lên',
+    'T18' => 'T18 - Từ 18 tuổi trở lên',
+    'C' => 'C - Cấm chiếu'
+  }.freeze
+
   # Validations
   validates :title, presence: { message: "không được để trống" }, length: { minimum: 10, too_short: "phải có ít nhất %{count} ký tự", maximum: 255, too_long: "tối đa 255 ký tự" }
   validates :duration, presence: true, numericality: {
@@ -36,25 +58,16 @@ class Movie < ApplicationRecord
   scope :showing, -> { where(status: :active) }
   scope :coming_soon, -> { where(status: :coming_soon) }
   scope :by_genre, ->(genre) { where(genre: genre) if genre.present? }
-  scope :search_by_title, ->(title) { where("title ILIKE ?", "%#{title}%") if title.present? }
+  scope :search_by_title, ->(title) { where("LOWER(title) LIKE ?", "%#{title.downcase}%") if title.present? }
   scope :recent, -> { order(created_at: :desc) }
 
   # Class methods
   def self.genres
-    %w[
-      Action Adventure Animation Biography Comedy Crime
-      Documentary Drama Family Fantasy History Horror
-      Musical Mystery Romance Sci-Fi Sport Thriller War Western
-    ]
+    GENRES.keys
   end
 
   def self.age_ratings_with_labels
-    {
-      'P' => 'Phổ biến (mọi lứa tuổi)',
-      'T13' => 'Trên 13 tuổi',
-      'T16' => 'Trên 16 tuổi',
-      'T18' => 'Trên 18 tuổi'
-    }
+    AGE_RATINGS
   end
 
   # Instance methods

@@ -9,6 +9,6 @@ class BookingPolicy < ApplicationPolicy
   end
 
   def new?
-    user.admin? || user.staff?
+    user.admin? || user.manager?
   end
 end

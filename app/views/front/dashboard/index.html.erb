@@ -1,0 +1,81 @@
+<% content_for :title, "Đặt vé của tôi - CinemaKD" %>
+
+<div class="space-y-12">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-gray-800 to-gray-600 rounded-xl p-8 text-white">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">
+        Chào mừng đến với CinemaKD
+      </h1>
+      <p class="text-xl mb-8">
+        Đặt vé xem phim trực tuyến dễ dàng và nhanh chóng
+      </p>
+      <a href="movies.html" class="inline-flex items-center px-6 py-3 bg-white text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        Khám phá phim <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Movies -->
+  <section>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold">Phim nổi bật</h2>
+      <a href="<%= front_movies_path %>" class="text-gray-600 hover:text-gray-700 font-medium flex items-center">
+        Xem tất cả <i class="fas fa-arrow-right ml-1"></i>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="featured-movies">
+      <% @movies.each do |movie| %>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+          <div class="relative h-64 w-full bg-gray-300">
+            <img src="<%= movie.poster_url || url_for(movie.poster_image) %>"
+                 alt="<%= movie.title %>"
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold mb-1 truncate"><%= movie.title %></h3>
+            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <span class="flex items-center mr-3">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    8.5/10
+                                </span>
+              <span><%= movie.duration %> phút</span>
+            </div>
+            <a href="movie-detail.html" class="inline-flex items-center mt-2 text-gray-600 hover:text-gray-700">
+              <i class="fas fa-calendar-alt mr-1"></i> Xem lịch chiếu
+            </a>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="bg-gray-50 rounded-xl p-8">
+    <h2 class="text-2xl font-bold mb-6 text-center">Tại sao chọn CinemaKD?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-clock text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Đặt vé nhanh chóng</h3>
+        <p class="text-gray-600">Chỉ mất vài phút để đặt vé xem phim yêu thích của bạn</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-credit-card text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Thanh toán an toàn</h3>
+        <p class="text-gray-600">Hệ thống thanh toán bảo mật và đa dạng phương thức</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-thumbs-up text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Trải nghiệm tuyệt vời</h3>
+        <p class="text-gray-600">Chọn chỗ ngồi, đặt đồ ăn và tận hưởng phim yêu thích</p>
+      </div>
+    </div>
+  </section>
+</div>

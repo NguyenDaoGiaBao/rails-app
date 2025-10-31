@@ -3,6 +3,7 @@ class MoviesController < ApplicationController
   before_action :set_movie, only: [:show, :edit, :update, :destroy]
 
   def index
+    authorize Movie
     @movies = Movie.includes(:showtimes)
                    .search_by_title(params[:search])
                    .by_genre(params[:genre])
