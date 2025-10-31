@@ -59,6 +59,13 @@ class ScreensController < ApplicationController
                 notice: "Đã xóa rạp '#{screen_name}'."
   end
 
+  def seats
+    screen = Screen.find(params[:id])
+    render json: { total_seats: screen.total_seats }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Screen not found" }, status: :not_found
+  end
+
   private
 
   def set_screen

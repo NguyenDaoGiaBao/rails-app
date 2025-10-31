@@ -18,23 +18,7 @@ module Front
                          .distinct
       end
 
-      # Sắp xếp
-      case params[:sort]
-      when 'title_asc'
-        @movies = @movies.order(:title)
-      when 'title_desc'
-        @movies = @movies.order(title: :desc)
-      when 'rating'
-        @movies = @movies.left_joins(:reviews)
-                         .group(:id)
-                         .order('AVG(reviews.rating) DESC NULLS LAST')
-      when 'newest'
-        @movies = @movies.order(created_at: :desc)
-      else
-        @movies = @movies.order(:title)
-      end
-
-      @movies = @movies.page(params[:page]).per(12)
+      @movies = @movies.page(params[:page]).per(6)
 
       # Data for filters
       @genres = Movie.showing.distinct.pluck(:genre).compact.sort
