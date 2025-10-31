@@ -37,7 +37,11 @@ Rails.application.routes.draw do
       post :bulk_actions
     end
   end
-  resources :screens
+  resources :screens do
+    member do
+      get :seats
+    end
+  end
   resources :showtimes
   resources :bookings do
     member do
@@ -67,6 +71,7 @@ Rails.application.routes.draw do
   post "/front-login", to: "sessions#create"
   delete "/front-logout", to: "sessions#destroy", as: :player_logout
   namespace :front do
+    get "dashboard/index"
     get "booking", to: "bookings#index"
     get "bookings/new",  to: "bookings#new"
     post "booking", to: "bookings#create"

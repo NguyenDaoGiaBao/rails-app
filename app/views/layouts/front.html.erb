@@ -12,7 +12,11 @@
   <!-- Tailwind & Font Awesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  <!-- BEGIN GLOBAL MANDATORY STYLES -->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+  <%= stylesheet_link_tag "bootstrap.min", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "plugins", "data-turbo-track": "reload" %>
+  <!-- END GLOBAL MANDATORY STYLES -->
   <%= yield :styles %>
 </head>
 
@@ -23,9 +27,9 @@
   <div class="container mx-auto px-4 py-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-6">
-        <%= link_to "CinemaKD", root_path, class: "text-2xl font-bold" %>
+        <%= link_to "CinemaKD", front_dashboard_index_path, class: "text-2xl font-bold" %>
         <nav class="hidden md:flex space-x-6">
-          <%= link_to "Trang chủ", root_path, class: "hover:text-gray-300 transition-colors" %>
+          <%= link_to "Trang chủ", front_dashboard_index_path, class: "hover:text-gray-300 transition-colors" %>
           <%= link_to "Đặt vé", front_booking_path, class: "hover:text-gray-300 transition-colors" %>
         </nav>
       </div>
@@ -112,7 +116,15 @@
     </div>
   </div>
 </footer>
-
+<!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+<%= javascript_include_tag "jquery.min" %>
+<%= javascript_include_tag "vendors.min", "data-turbo-track": "reload"  %>
+<%= javascript_include_tag "bootstrap.bundle.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "perfect-scrollbar.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "mousetrap.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "waves.min", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "app", "data-turbo-track": "reload" %>
+<!-- END GLOBAL MANDATORY SCRIPTS -->
 <%= yield :scripts %>
 </body>
 </html>

@@ -42,18 +42,7 @@
               <div class="mb-3">
                 <%= form.label :genre, "Thể loại", class: "form-label required" %>
                 <%= form.select :genre,
-                                options_for_select([
-                                                     ["Hành động", "action"],
-                                                     ["Hài kịch", "comedy"],
-                                                     ["Chính kịch", "drama"],
-                                                     ["Kinh dị", "horror"],
-                                                     ["Lãng mạn", "romance"],
-                                                     ["Khoa học viễn tưởng", "sci_fi"],
-                                                     ["Phiêu lưu", "adventure"],
-                                                     ["Tài liệu", "documentary"],
-                                                     ["Gia đình", "family"],
-                                                     ["Hoạt hình", "animation"]
-                                                   ], @movie.genre),
+                                options_for_select(Movie::GENRES.map { |k, v| [v, k] }, @movie.genre),
                                 { prompt: "Chọn thể loại" },
                                 { class: "form-select #{'is-invalid' if @movie.errors[:genre].any?}", required: true } %>
                 <div class="invalid-feedback d-block">
@@ -77,14 +66,7 @@
               <div class="mb-3">
                 <%= form.label :age_rating, "Độ tuổi", class: "form-label required" %>
                 <%= form.select :age_rating,
-                                options_for_select([
-                                                     ["P - Phù hợp mọi lứa tuổi", "P"],
-                                                     ["K - Dành cho trẻ em dưới 13 tuổi", "K"],
-                                                     ["T13 - Từ 13 tuổi trở lên", "T13"],
-                                                     ["T16 - Từ 16 tuổi trở lên", "T16"],
-                                                     ["T18 - Từ 18 tuổi trở lên", "T18"],
-                                                     ["C - Cấm chiếu", "C"]
-                                                   ], @movie.age_rating),
+                                options_for_select(Movie.age_ratings_with_labels.map { |k, v| [v, k] }, @movie.age_rating),
                                 { prompt: "Chọn độ tuổi" },
                                 { class: "form-select #{'is-invalid' if @movie.errors[:age_rating].any?}", required: true } %>
                 <div class="invalid-feedback d-block">

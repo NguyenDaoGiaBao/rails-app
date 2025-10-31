@@ -127,3 +127,31 @@
     <%= link_to "Hủy", showtimes_path, class: "btn btn-secondary" %>
   </div>
 <% end %>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const showtimeSelect = document.getElementById("showtime_screen_id");
+        const seatInput = document.getElementById("showtime_total_seats");
+        const seatAvailableInput = document.getElementById("showtime_available_seats");
+
+        showtimeSelect.addEventListener("change", async (e) => {
+            const screenId = e.target.value;
+            if (!screenId) {
+                seatInput.value = "";
+                return;
+            }
+            try {
+                const response = await fetch(`/screens/${screenId}/seats`);
+                if (!response.ok) throw new Error("Request failed");
+
+                const data = await response.json();
+                if (data.total_seats) {
+                    seatInput.value = data.total_seats;
+                    seatAvailableInput.value = data.total_seats;
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy số ghế:", error);
+            }
+        });
+    });
+</script>
